@@ -137,3 +137,4 @@ Access the admin panel at `/admin/` to:
 
 This project is proprietary software for Shivam Construction Company.
 
+# shivam-solar-companey
