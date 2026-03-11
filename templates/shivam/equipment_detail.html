@@ -1,0 +1,128 @@
+{% extends 'shivam/base.html' %}
+{% load static %}
+
+{% block title %}{{ equipment.name }} - Equipment Details{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>{{ equipment.name }}</h1>
+        <p class="subtitle">Equipment Details and Images</p>
+    </div>
+</section>
+
+<!-- Equipment Detail Section -->
+<section class="section equipment-detail-section page-background" {% if company.equipment_bg %}style="background-image: url('{{ company.equipment_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/equipment-bg.jpg" %}');"{% endif %}>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <!-- Back Button -->
+        <div class="back-button-wrapper">
+            <a href="{% url 'equipment' %}" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                Back to Equipment List
+            </a>
+        </div>
+
+        <!-- Equipment Info -->
+        <div class="equipment-info-card">
+            <div class="equipment-main-image">
+                {% if equipment.image %}
+                    <img src="{{ equipment.image.url }}" alt="{{ equipment.name }}">
+                {% else %}
+                    <div class="equipment-placeholder">🚜</div>
+                {% endif %}
+            </div>
+            <div class="equipment-details">
+                <h2>{{ equipment.name }}</h2>
+                <div class="equipment-meta">
+                    <span class="meta-item">
+                        <strong>Quantity:</strong> {{ equipment.quantity }}
+                    </span>
+                    {% if equipment.category %}
+                    <span class="meta-item">
+                        <strong>Category:</strong> {{ equipment.category }}
+                    </span>
+                    {% endif %}
+                </div>
+                {% if equipment.description %}
+                <div class="equipment-description">
+                    <h3>Description</h3>
+                    <p>{{ equipment.description }}</p>
+                </div>
+                {% endif %}
+                {% if equipment.specifications %}
+                <div class="equipment-specifications">
+                    <h3>Specifications</h3>
+                    <p>{{ equipment.specifications|linebreaks }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Equipment Images Gallery -->
+        {% if equipment_images %}
+        <div class="equipment-gallery">
+            <h2 class="gallery-title">Equipment Images</h2>
+            <div class="gallery-grid">
+                {% for img in equipment_images %}
+                <div class="gallery-item">
+                    <div class="gallery-image-wrapper">
+                        <img src="{{ img.image.url }}" alt="{{ img.title|default:equipment.name }}" class="gallery-image" onclick="openLightbox('{{ img.image.url }}', '{{ img.title|default:equipment.name }}')">
+                    </div>
+                    {% if img.title %}
+                    <p class="gallery-title-text">{{ img.title }}</p>
+                    {% endif %}
+                    {% if img.description %}
+                    <p class="gallery-description">{{ img.description }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="no-images-message">
+            <div class="no-images-icon">📷</div>
+            <h3>No Images Available</h3>
+            <p>Images for this equipment will appear here once uploaded through the admin panel.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img class="lightbox-content" id="lightbox-img">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openLightbox(imageSrc, title) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    
+    lightbox.style.display = 'flex';
+    lightboxImg.src = imageSrc;
+    lightboxCaption.textContent = title;
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+}
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeLightbox();
+    }
+});
+</script>
+{% endblock %}
+

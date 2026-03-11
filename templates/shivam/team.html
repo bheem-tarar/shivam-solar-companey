@@ -1,0 +1,315 @@
+{% extends 'shivam/base.html' %}
+{% load static %}
+
+{% block title %}Team - Shivam Construction Company{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>Our Team</h1>
+        <p class="subtitle">Human Resources and Organization Structure</p>
+    </div>
+</section>
+
+<!-- Site Staff Section -->
+<section class="section team-section page-background" {% if company.team_bg %}style="background-image: url('{{ company.team_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/team-bg.jpg" %}');"{% endif %}>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Site Staff</h2>
+            <p class="section-total">Total: <strong>{{ site_staff_total }}</strong> members</p>
+        </div>
+        
+        <!-- Summary Table -->
+        <div class="staff-summary-table-wrapper">
+            <table class="staff-summary-table">
+                <thead>
+                    <tr>
+                        <th>Designation</th>
+                        <th>Total Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for designation, quantity in site_staff_summary.items %}
+                    <tr>
+                        <td>{{ designation }}</td>
+                        <td class="quantity-cell"><strong>{{ quantity }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="total-row">
+                        <td><strong>Total Site Staff</strong></td>
+                        <td class="quantity-cell"><strong>{{ site_staff_total }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-header">
+            <h3 class="subsection-title">Detailed Breakdown</h3>
+        </div>
+        {% if site_staff %}
+        <div class="staff-grid">
+            {% regroup site_staff by team as staff_by_team %}
+            {% for team_group in staff_by_team %}
+            <div class="team-group">
+                <h3 class="team-name">{{ team_group.grouper|default:"General" }}</h3>
+                <div class="staff-list">
+                    {% for staff_member in team_group.list %}
+                    <div class="staff-card">
+                        <h4>{{ staff_member.designation }}</h4>
+                        <p>Quantity: <strong>{{ staff_member.quantity }}</strong></p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Default site staff structure -->
+        <div class="staff-structure">
+            <div class="staff-category">
+                <h3>Onsite Staff</h3>
+                <div class="staff-grid">
+                    <div class="staff-card">
+                        <h4>Project Manager</h4>
+                        <p>Total: <strong>2</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Senior Engineer</h4>
+                        <p>Total: <strong>2</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Junior Engineer</h4>
+                        <p>Total: <strong>4</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Surveyor</h4>
+                        <p>Total: <strong>2</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Supervisor</h4>
+                        <p>Total: <strong>3</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Safety Supervisors</h4>
+                        <p>Total: <strong>1</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Electrician</h4>
+                        <p>Total: <strong>1</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Mechanic</h4>
+                        <p>Total: <strong>3</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Store Keeper</h4>
+                        <p>Total: <strong>3</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="staff-category">
+                <h3>Off-site Staff</h3>
+                <div class="staff-grid">
+                    <div class="staff-card">
+                        <h4>Cook</h4>
+                        <p>Total: <strong>4</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Skilled Labor</h4>
+                        <p>Total: <strong>16</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="total-staff">
+                <h3>Total Site Staff: <strong>41</strong></h3>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Central Planner Section -->
+<section class="section team-section page-background" {% if company.team_bg %}style="background-image: url('{{ company.team_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/team-bg.jpg" %}');"{% endif %}>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Central Planner</h2>
+            <p class="section-total">Total: <strong>{{ central_staff_total }}</strong> members</p>
+        </div>
+        
+        <!-- Summary Table -->
+        <div class="staff-summary-table-wrapper">
+            <table class="staff-summary-table">
+                <thead>
+                    <tr>
+                        <th>Designation</th>
+                        <th>Total Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for designation, quantity in central_staff_summary.items %}
+                    <tr>
+                        <td>{{ designation }}</td>
+                        <td class="quantity-cell"><strong>{{ quantity }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="total-row">
+                        <td><strong>Total Central Planner Staff</strong></td>
+                        <td class="quantity-cell"><strong>{{ central_staff_total }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-header">
+            <h3 class="subsection-title">Detailed Breakdown</h3>
+        </div>
+        {% if central_staff %}
+        <div class="staff-grid">
+            {% for staff_member in central_staff %}
+            <div class="staff-card">
+                <h4>{{ staff_member.designation }}</h4>
+                <p>Quantity: <strong>{{ staff_member.quantity }}</strong></p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Default central planner structure -->
+        <div class="staff-structure">
+            <div class="staff-category">
+                <h3>Management</h3>
+                <div class="staff-grid">
+                    <div class="staff-card">
+                        <h4>Proprietor</h4>
+                        <p>Total: <strong>1</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Manager</h4>
+                        <p>Total: <strong>2</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="staff-category">
+                <h3>Accounting & Finance</h3>
+                <div class="staff-grid">
+                    <div class="staff-card">
+                        <h4>Senior Accountant</h4>
+                        <p>Total: <strong>1</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Account Assistant</h4>
+                        <p>Total: <strong>2</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Financer</h4>
+                        <p>Total: <strong>1</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="staff-category">
+                <h3>Other Departments</h3>
+                <div class="staff-grid">
+                    <div class="staff-card">
+                        <h4>HR Officer</h4>
+                        <p>Total: <strong>2</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Safety Officer</h4>
+                        <p>Total: <strong>1</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Drawing & Designing Section</h4>
+                        <p>Total: <strong>1</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Billing Section</h4>
+                        <p>Total: <strong>2</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Q&C</h4>
+                        <p>Total: <strong>1</strong></p>
+                    </div>
+                    <div class="staff-card">
+                        <h4>Purchaser</h4>
+                        <p>Total: <strong>2</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="total-staff">
+                <h3>Total Central Planner Staff: <strong>16</strong></h3>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Grand Total Section -->
+<section class="section grand-total-section page-background" {% if company.team_bg %}style="background-image: url('{{ company.team_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/team-bg.jpg" %}');"{% endif %}>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <div class="grand-total-card">
+            <h2>Total Company Strength</h2>
+            <div class="total-breakdown">
+                <div class="total-item">
+                    <span class="total-label">Site Staff:</span>
+                    <span class="total-value">{{ site_staff_total }}</span>
+                </div>
+                <div class="total-item">
+                    <span class="total-label">Central Planner:</span>
+                    <span class="total-value">{{ central_staff_total }}</span>
+                </div>
+                <div class="total-item grand-total-item">
+                    <span class="total-label">Grand Total:</span>
+                    <span class="total-value">{{ grand_total }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Organization Chart Section -->
+<section class="section org-chart-section page-background" {% if company.team_bg %}style="background-image: url('{{ company.team_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/team-bg.jpg" %}');"{% endif %}>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Organization Chart</h2>
+        </div>
+        <div class="org-chart">
+            <div class="org-level level-1">
+                <div class="org-box proprietor">PROPRIETOR</div>
+            </div>
+            <div class="org-level level-2">
+                <div class="org-box managers">MANAGERS</div>
+            </div>
+            <div class="org-level level-3">
+                <div class="org-box dept">SALES</div>
+                <div class="org-box dept">PURCHASE</div>
+                <div class="org-box dept">OPERATIONS</div>
+                <div class="org-box dept">ADMIN & ACCOUNTS</div>
+                <div class="org-box dept">HR</div>
+            </div>
+            <div class="org-level level-4">
+                <div class="org-box role">PROJECT MANAGER</div>
+                <div class="org-box role">QAQC</div>
+                <div class="org-box role">SAFETY</div>
+                <div class="org-box role">DRAWING & DESIGNING</div>
+                <div class="org-box role">BILLING</div>
+            </div>
+            <div class="org-level level-5">
+                <div class="org-box sub-role">SR. ENGINEER</div>
+                <div class="org-box sub-role">JR. ENGINEER</div>
+                <div class="org-box sub-role">SURVEYOR</div>
+                <div class="org-box sub-role">SUPERVISOR</div>
+                <div class="org-box sub-role">TECHNICIAN</div>
+            </div>
+            <div class="org-level level-6">
+                <div class="org-box final-role">ELECTRICIAN</div>
+                <div class="org-box final-role">MECHANIC</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

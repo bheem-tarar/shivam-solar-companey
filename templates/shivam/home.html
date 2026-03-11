@@ -1,0 +1,136 @@
+{% extends 'shivam/base.html' %}
+{% load static %}
+
+{% block title %}Home - Shivam Construction Company{% endblock %}
+
+{% block content %}
+<!-- Image Carousel Section -->
+<section class="carousel-section">
+    <div class="carousel-container">
+        <div class="carousel-slides" id="carouselSlides">
+            {% if intro_images %}
+                {% for img in intro_images %}
+                <div class="carousel-slide {% if forloop.first %}active{% endif %}">
+                    <img src="{{ img.image.url }}" alt="{{ img.title }}">
+                    <div class="carousel-overlay"></div>
+                    <div class="carousel-content">
+                        <h1 class="hero-title">
+                            <span class="title-main">SHIVAM</span>
+                            <span class="title-sub">CONSTRUCTION COMPANY</span>
+                        </h1>
+                        <p class="hero-tagline">{{ company.tagline|default:"Civil Contractor & General Order Suppliers" }}</p>
+                        <div class="hero-buttons">
+                            <a href="{% url 'services' %}" class="btn btn-primary">Our Services</a>
+                            <a href="{% url 'contact' %}" class="btn btn-secondary">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Default carousel slides using intro-style panels (tractor, truck, crane) with dynamic year -->
+                <div class="carousel-slide active">
+                    <div class="carousel-slide-placeholder construction-img-1"></div>
+                    <div class="carousel-overlay"></div>
+                    <div class="year-overlay" id="carouselYear">{% now "Y" %}</div>
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-slide-placeholder construction-img-2"></div>
+                    <div class="carousel-overlay"></div>
+                    <div class="year-overlay">{% now "Y" %}</div>
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-slide-placeholder construction-img-3"></div>
+                    <div class="carousel-overlay"></div>
+                    <div class="year-overlay">{% now "Y" %}</div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Carousel Navigation -->
+        <button class="carousel-nav carousel-prev" onclick="changeSlide(-1)">❮</button>
+        <button class="carousel-nav carousel-next" onclick="changeSlide(1)">❯</button>
+        
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators" id="carouselIndicators">
+            {% if intro_images %}
+                {% for img in intro_images %}
+                <span class="indicator {% if forloop.first %}active{% endif %}" onclick="goToSlide({{ forloop.counter0 }})"></span>
+                {% endfor %}
+            {% else %}
+                <span class="indicator active" onclick="goToSlide(0)"></span>
+                <span class="indicator" onclick="goToSlide(1)"></span>
+                <span class="indicator" onclick="goToSlide(2)"></span>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Introduction Section -->
+<section class="section introduction-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">INTRODUCTION</h2>
+        </div>
+        <div class="intro-content">
+            <div class="intro-text">
+                <p>Shivam Construction Company is engaged in large format earthworks, cross-country piping, irrigation works, industrial plant buildings, commercial and IT spaces, plant fabrication and erection (especially in power, petrochemical, and pharmaceutical areas).</p>
+                <p>We have expertise in Civil activities, including Construction of Industrial and Residential Buildings, heavy equipment foundations, and Cooling Towers.</p>
+                <p class="motto"><strong>Our Motto:</strong> To exceed the customer expectations by understanding their needs and delivering them with specified quality, within the agreed time and thus becoming their trusted partners.</p>
+                <p class="philosophy">We believe the workplace is where one should unleash creative excellence, possible through "unbounded freedom bounded only by one's own conscience."</p>
+            </div>
+            <div class="intro-images">
+                {% if intro_images %}
+                    {% for img in intro_images %}
+                    <div class="image-card">
+                        <img src="{{ img.image.url }}" alt="{{ img.title }}" class="intro-image">
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="image-card">
+                        <div class="image-placeholder construction-img-1"></div>
+                    </div>
+                    <div class="image-card">
+                        <div class="image-placeholder construction-img-2"></div>
+                    </div>
+                    <div class="image-card">
+                        <div class="image-placeholder construction-img-3"></div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Links Section -->
+<section class="section quick-links-section">
+    <div class="container">
+        <div class="quick-links-grid">
+            <a href="{% url 'about' %}" class="quick-link-card">
+                <div class="quick-link-icon">🏢</div>
+                <h3>About Us</h3>
+                <p>Learn about our vision, quality policy, and key team members</p>
+            </a>
+            <a href="{% url 'services' %}" class="quick-link-card">
+                <div class="quick-link-icon">🔧</div>
+                <h3>Our Services</h3>
+                <p>Comprehensive construction and engineering services</p>
+            </a>
+            <a href="{% url 'projects' %}" class="quick-link-card">
+                <div class="quick-link-icon">🏗️</div>
+                <h3>Completed Projects</h3>
+                <p>View our portfolio of successful projects</p>
+            </a>
+            <a href="{% url 'equipment' %}" class="quick-link-card">
+                <div class="quick-link-icon">🚜</div>
+                <h3>Equipment</h3>
+                <p>State-of-the-art machinery and equipment</p>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/carousel.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,105 @@
+{% extends 'shivam/base.html' %}
+{% load static %}
+
+{% block title %}Services - Shivam Construction Company{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>Services We Offer</h1>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="section services-section page-background" {% if company.services_bg %}style="background-image: url('{{ company.services_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/services-bg.jpg" %}');"{% endif %}>
+    <div class="background-overlay"></div>
+    <div class="container">
+        {% for category, services_list in services_by_category.items %}
+        <div class="service-category">
+            <h2 class="category-title">{{ category }}</h2>
+            <div class="services-grid">
+                {% for service in services_list %}
+                <div class="service-card">
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% empty %}
+        <!-- Default Services if none in database -->
+        <div class="service-category">
+            <h2 class="category-title">Industrial and Commercial Buildings</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Construction of Industrial Warehouses</h3>
+                    <p>Expert construction of large-scale industrial warehouses with modern facilities and infrastructure.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Construction of Commercial Buildings and Towers</h3>
+                    <p>Design and construction of commercial buildings and high-rise towers with state-of-the-art facilities.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Equipment Erection</h3>
+                    <p>Professional equipment erection services for industrial and commercial facilities.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="service-category">
+            <h2 class="category-title">Civil</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Large Format Earth Works and Road Works</h3>
+                    <p>Comprehensive earthworks and road construction services for large-scale projects.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Contour Survey, Grading and Leveling</h3>
+                    <p>Professional surveying, grading, leveling, and setting out services for construction projects.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Construction of Foundations</h3>
+                    <p>Expert foundation construction for industrial buildings and heavy equipment.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Canal Excavation and Lining</h3>
+                    <p>Canal excavation, lining, strengthening of banks, and associated head works.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Water Storage Solutions</h3>
+                    <p>Construction of Ash ponds, water storage tanks, and reservoirs.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Control Blasting / Rock Blasting Works</h3>
+                    <p>Professional and controlled blasting services for rock excavation projects.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="service-category">
+            <h2 class="category-title">Cross Country Piping</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Survey, Marking, and ROU Formation</h3>
+                    <p>Complete survey, marking, and Right of Way (ROU) formation services for pipeline projects.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Stringing, Trench Work, Welding, Laying and Testing</h3>
+                    <p>End-to-end pipeline services including stringing, trench work, welding, laying, and testing.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Valve Stations and Pump Houses</h3>
+                    <p>Construction of valve stations and pump houses for pipeline infrastructure.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Intake Wells and Access Bridges</h3>
+                    <p>Construction of intake wells and fabrication and erection of access bridges.</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+

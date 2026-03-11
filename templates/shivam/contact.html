@@ -1,0 +1,65 @@
+{% extends 'shivam/base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - Shivam Construction Company{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p class="subtitle">Get in touch with us for your construction needs</p>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section contact-section page-background" {% if company.contact_bg %}style="background-image: url('{{ company.contact_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/contact-bg.jpg" %}');"{% endif %}>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <div class="contact-wrapper">
+            <div class="contact-info">
+                <div class="contact-card">
+                    <div class="contact-icon">📞</div>
+                    <h3>Phone</h3>
+                    <p><a href="tel:{{ company.phone|default:'6350092193' }}">{{ company.phone|default:"6350092193" }}</a></p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">✉️</div>
+                    <h3>Email</h3>
+                    <p><a href="mailto:{{ company.email|default:'scccompany91@gmail.com' }}">{{ company.email|default:"scccompany91@gmail.com" }}</a></p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">📍</div>
+                    <h3>Address</h3>
+                    <p>{{ company.address|default:"SHOP NO. 05, NEAR INDANE GAS OFFICE, BASANT VIHAR COLONY, SURATGARH, SRI GANGANAGAR, RAJASTHAN, 335804" }}</p>
+                </div>
+            </div>
+            
+            <div class="contact-form-wrapper">
+                <h2>Send us a Message</h2>
+                <form class="contact-form" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

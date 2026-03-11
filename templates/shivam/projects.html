@@ -1,0 +1,130 @@
+{% extends 'shivam/base.html' %}
+{% load static %}
+
+{% block title %}Projects - Shivam Construction Company{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>Projects</h1>
+        <p class="subtitle">Our Experience and Track Record</p>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section class="section projects-section page-background" {% if company.projects_bg %}style="background-image: url('{{ company.projects_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/projects-bg.jpg" %}');"{% endif %}>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <!-- Project Filter Dropdown -->
+        <div class="project-filters">
+            <div class="filter-dropdown-wrapper">
+                <select id="projectFilter" class="project-filter-dropdown" onchange="filterProjects(this.value)">
+                    <option value="all" {% if current_filter == 'all' %}selected{% endif %}>ALL PROJECTS ({{ total_count }})</option>
+                    <option value="completed" {% if current_filter == 'completed' %}selected{% endif %}>PROJECT COMPLETED ({{ completed_count }})</option>
+                    <option value="on_hand" {% if current_filter == 'on_hand' %}selected{% endif %}>PROJECT ON HAND ({{ on_hand_count }})</option>
+                    <option value="ongoing" {% if current_filter == 'ongoing' %}selected{% endif %}>ONGOING PROJECTS ({{ ongoing_count }})</option>
+                </select>
+            </div>
+            <div class="filter-info">
+                <p>Showing: <strong id="showingCount">{{ projects.count }}</strong> project(s)</p>
+            </div>
+        </div>
+        
+        <div class="projects-table-wrapper">
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>S. No.</th>
+                        <th>Work Awarded By</th>
+                        <th>WO Reference</th>
+                        <th>Type of Works</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ project.work_awarded_by }}</td>
+                        <td>{{ project.wo_reference }}</td>
+                        <td>{{ project.type_of_work }}</td>
+                        <td>
+                            <span class="status-badge status-{{ project.status }}">
+                                {{ project.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ project.date|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% if project.image %}
+                    <tr class="project-image-row">
+                        <td colspan="6">
+                            <img src="{{ project.image.url }}" alt="{{ project.type_of_work }}" class="project-image">
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% empty %}
+                    <!-- Default projects if none in database -->
+                    <tr>
+                        <td>01</td>
+                        <td>NKC Project Pvt. Ltd.</td>
+                        <td>NKCPPL/ Raj. Pkg No-3/2019 28/067/10-12-19</td>
+                        <td>Cont. of Earth Work Under Road Work</td>
+                        <td><span class="status-badge status-completed">Project Completed</span></td>
+                        <td>10/12/2019</td>
+                    </tr>
+                    <tr>
+                        <td>02</td>
+                        <td>VRC</td>
+                        <td>VRC/Raj. Pkg-08/2020 35/075/04-06-2020</td>
+                        <td>Cont. of Earth Work Under Road Work</td>
+                        <td><span class="status-badge status-completed">Project Completed</span></td>
+                        <td>04/06/2020</td>
+                    </tr>
+                    <tr>
+                        <td>03</td>
+                        <td>BARBRIK LOGISTIC PVT. LTD.</td>
+                        <td>BLPL/RAJ. WO. NO.-113504 18-8-2020</td>
+                        <td>Earth Work Under Road Work</td>
+                        <td><span class="status-badge status-completed">Project Completed</span></td>
+                        <td>04/06/2020</td>
+                    </tr>
+                    <tr>
+                        <td>04</td>
+                        <td>M/s Krishna Construction</td>
+                        <td>KCPL/Raj Pkg-04/2020 201058-08103/2020</td>
+                        <td>Cont. of Earth Work Under Road Work</td>
+                        <td><span class="status-badge status-completed">Project Completed</span></td>
+                        <td>08/03/2020</td>
+                    </tr>
+                    <tr>
+                        <td>05</td>
+                        <td>M/s Krishna Construction</td>
+                        <td>WO/KC/BMP/AJ-SR/ PKG-1/2021/01</td>
+                        <td>Cont. of Earth Work Under Road Work</td>
+                        <td><span class="status-badge status-completed">Project Completed</span></td>
+                        <td>01/07/2021</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+function filterProjects(status) {
+    const url = new URL(window.location);
+    if (status === 'all') {
+        url.searchParams.delete('status');
+    } else {
+        url.searchParams.set('status', status);
+    }
+    window.location.href = url.toString();
+}
+</script>
+{% endblock %}
+{% endblock %}
+
