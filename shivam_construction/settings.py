@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']  # Allow all hosts for ngrok
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',              # new – admin theme
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -74,6 +75,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'shivam_construction.wsgi.application'
 
 
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Shivam Construction Admin",
+    "site_header": "Shivam Construction",
+    "site_brand": "SCC Admin",
+    "welcome_sign": "Welcome to Shivam Construction Admin",
+    "copyright": "Shivam Construction Company",
+}
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 

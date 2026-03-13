@@ -45,7 +45,7 @@
                 </thead>
                 <tbody>
                     {% for project in projects %}
-                    <tr>
+                    <tr class="project-row" onclick="window.location.href='{% url 'project_detail' project.id %}'">
                         <td>{{ forloop.counter }}</td>
                         <td>{{ project.work_awarded_by }}</td>
                         <td>{{ project.wo_reference }}</td>

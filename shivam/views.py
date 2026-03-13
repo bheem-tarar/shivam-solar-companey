@@ -100,6 +100,18 @@ def projects(request):
     }
     return render(request, 'shivam/projects.html', context)
 
+
+def project_detail(request, project_id):
+    """Single project detail page with richer presentation"""
+    company = CompanyInfo.objects.first()
+    project = get_object_or_404(CompletedProject, id=project_id)
+
+    context = {
+        'company': company,
+        'project': project,
+    }
+    return render(request, 'shivam/project_detail.html', context)
+
 def equipment(request):
     """Equipment and machinery page"""
     equipment_list = Equipment.objects.all()
