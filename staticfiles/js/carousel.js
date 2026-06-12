@@ -17,6 +17,59 @@ document.addEventListener('DOMContentLoaded', function() {
         showSlide(0);
         startAutoSlide();
     }
+
+    // Ensure autoplay works across browsers/devices.
+    const heroVideo = document.querySelector('.video-hero-bg');
+    const heroSection = document.querySelector('.video-hero-section');
+    const allSlideVideos = document.querySelectorAll('.carousel-video');
+    const videos = [];
+    if (heroVideo) videos.push(heroVideo);
+    allSlideVideos.forEach(v => videos.push(v));
+
+    videos.forEach(video => {
+        video.muted = true;
+        video.playsInline = true;
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {
+                // Retry once after user interaction if autoplay is blocked.
+                const retryPlay = () => {
+                    video.play().finally(() => {
+                        document.removeEventListener('click', retryPlay);
+                        document.removeEventListener('touchstart', retryPlay);
+                    });
+                };
+                document.addEventListener('click', retryPlay, { once: true });
+                document.addEventListener('touchstart', retryPlay, { once: true });
+            });
+        }
+    });
+
+    // iPhone/Safari fallback: if hero video can't start, keep a clean image background.
+    if (heroVideo && heroSection) {
+        let heroStarted = false;
+        const activateFallback = () => {
+            if (!heroStarted) heroSection.classList.add('video-fallback-active');
+        };
+
+        heroVideo.addEventListener('playing', () => {
+            heroStarted = true;
+            heroSection.classList.remove('video-fallback-active');
+        });
+        heroVideo.addEventListener('canplay', () => {
+            if (!heroStarted) {
+                const p = heroVideo.play();
+                if (p && typeof p.catch === 'function') p.catch(() => activateFallback());
+            }
+        });
+        heroVideo.addEventListener('error', activateFallback);
+        heroVideo.addEventListener('stalled', activateFallback);
+        heroVideo.addEventListener('abort', activateFallback);
+
+        setTimeout(() => {
+            if (!heroStarted) activateFallback();
+        }, 2500);
+    }
 });
 
 function showSlide(index) {

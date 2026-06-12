@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 # Company Information Model
 class CompanyInfo(models.Model):
@@ -207,3 +208,56 @@ class Document(models.Model):
             return self.file.name.split('.')[-1].upper()
         except:
             return "FILE"
+
+
+class ContactMessage(models.Model):
+    """Messages submitted from the Contact Us page."""
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name_plural = "Contact Messages"
+
+    def __str__(self):
+        return f"{self.name} - {self.email}"
+
+
+class HomeBanner(models.Model):
+    """Homepage banners (video only)."""
+    MEDIA_TYPES = [
+        ('video', 'Video'),
+    ]
+
+    title = models.CharField(max_length=200)
+    subtitle = models.CharField(max_length=300, blank=True)
+    tagline = models.CharField(max_length=300, blank=True)
+    media_type = models.CharField(max_length=10, choices=MEDIA_TYPES, default='video')
+    image = models.ImageField(upload_to='banners/images/', blank=True, null=True)
+    video = models.FileField(upload_to='banners/videos/', blank=True, null=True)
+    button_text = models.CharField(max_length=80, blank=True, default='Learn More')
+    button_url = models.CharField(max_length=300, blank=True, default='/projects/')
+    secondary_button_text = models.CharField(max_length=80, blank=True, default='Contact Us')
+    secondary_button_url = models.CharField(max_length=300, blank=True, default='/contact/')
+    is_active = models.BooleanField(default=True)
+    order = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', '-created_at']
+        verbose_name_plural = "Home Banners"
+
+    def __str__(self):
+        return self.title
+
+    def clean(self):
+        if not self.video:
+            raise ValidationError("Please upload a video file for this banner.")
+
+    def save(self, *args, **kwargs):
+        # Enforce video-only behavior for all HomeBanner entries.
+        self.media_type = 'video'
+        super().save(*args, **kwargs)

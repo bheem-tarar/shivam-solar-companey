@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CompanyInfo, KeyPerson, Service, CompletedProject, Equipment, Staff, CompanyImage, Document, EquipmentImage
+from .models import CompanyInfo, KeyPerson, Service, CompletedProject, Equipment, Staff, CompanyImage, Document, EquipmentImage, ContactMessage, HomeBanner
 
 @admin.register(CompanyInfo)
 class CompanyInfoAdmin(admin.ModelAdmin):
@@ -84,3 +84,26 @@ class DocumentAdmin(admin.ModelAdmin):
     def get_file_size(self, obj):
         return obj.get_file_size()
     get_file_size.short_description = 'File Size'
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ['name', 'email', 'phone', 'created_at']
+    search_fields = ['name', 'email', 'phone', 'message']
+    readonly_fields = ['name', 'email', 'phone', 'message', 'created_at']
+
+
+@admin.register(HomeBanner)
+class HomeBannerAdmin(admin.ModelAdmin):
+    list_display = ['title', 'is_active', 'order', 'created_at']
+    list_filter = ['is_active']
+    list_editable = ['is_active', 'order']
+    search_fields = ['title', 'subtitle', 'tagline']
+    readonly_fields = ['media_type']
+    fields = [
+        'title', 'subtitle', 'tagline',
+        'media_type', 'video',
+        'button_text', 'button_url',
+        'secondary_button_text', 'secondary_button_url',
+        'is_active', 'order'
+    ]

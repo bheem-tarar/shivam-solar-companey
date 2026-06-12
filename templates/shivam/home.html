@@ -4,44 +4,114 @@
 {% block title %}Home - Shivam Construction Company{% endblock %}
 
 {% block content %}
-<!-- Image Carousel Section -->
+{% if video_banner and video_banner.video %}
+<!-- Full-screen background video hero -->
+<section class="video-hero-section">
+    <div class="video-hero-fallback" {% if company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% endif %}></div>
+    <video class="video-hero-bg" autoplay muted loop playsinline webkit-playsinline preload="auto">
+        <source src="{{ video_banner.video.url }}" type="video/mp4">
+    </video>
+    <div class="video-hero-overlay"></div>
+    <div class="video-hero-content">
+        <h1 class="hero-title">
+            <span class="title-main">{{ video_banner.title|default:"SHIVAM CONSTRUCTION COMPANY" }}</span>
+            <span class="title-sub">{{ video_banner.subtitle|default:"Civil Contractor & General Order Suppliers" }}</span>
+        </h1>
+        <p class="hero-tagline">{{ video_banner.tagline|default:company.tagline|default:"Civil Contractor & General Order Suppliers" }}</p>
+        <div class="hero-buttons">
+            {% if video_banner.button_url %}
+                <a href="{{ video_banner.button_url }}" class="btn btn-primary">{{ video_banner.button_text|default:"Learn More" }}</a>
+            {% endif %}
+            {% if video_banner.secondary_button_url %}
+                <a href="{{ video_banner.secondary_button_url }}" class="btn btn-secondary">{{ video_banner.secondary_button_text|default:"Contact Us" }}</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% else %}
+<!-- Image/Video Carousel Section -->
 <section class="carousel-section">
     <div class="carousel-container">
         <div class="carousel-slides" id="carouselSlides">
-            {% if intro_images %}
-                {% for img in intro_images %}
+            {% if banners %}
+                {% for banner in banners %}
                 <div class="carousel-slide {% if forloop.first %}active{% endif %}">
-                    <img src="{{ img.image.url }}" alt="{{ img.title }}">
+                    {% if banner.video %}
+                        <video class="carousel-video" autoplay muted loop playsinline webkit-playsinline preload="metadata">
+                            <source src="{{ banner.video.url }}" type="video/mp4">
+                        </video>
+                    {% elif company.hero_image %}
+                        <img src="{{ company.hero_image.url }}" alt="{{ banner.title|default:'Banner image' }}">
+                    {% else %}
+                        <div class="carousel-slide-placeholder construction-img-1"></div>
+                    {% endif %}
                     <div class="carousel-overlay"></div>
                     <div class="carousel-content">
                         <h1 class="hero-title">
-                            <span class="title-main">SHIVAM</span>
-                            <span class="title-sub">CONSTRUCTION COMPANY</span>
+                            <span class="title-main">{{ banner.title|default:"SHIVAM CONSTRUCTION COMPANY" }}</span>
+                            <span class="title-sub">{{ banner.subtitle|default:"Civil Contractor & General Order Suppliers" }}</span>
                         </h1>
-                        <p class="hero-tagline">{{ company.tagline|default:"Civil Contractor & General Order Suppliers" }}</p>
+                        <p class="hero-tagline">{{ banner.tagline|default:company.tagline|default:"Civil Contractor & General Order Suppliers" }}</p>
                         <div class="hero-buttons">
-                            <a href="{% url 'services' %}" class="btn btn-primary">Our Services</a>
-                            <a href="{% url 'contact' %}" class="btn btn-secondary">Contact Us</a>
+                            {% if banner.button_url %}
+                                <a href="{{ banner.button_url }}" class="btn btn-primary">{{ banner.button_text|default:"Learn More" }}</a>
+                            {% endif %}
+                            {% if banner.secondary_button_url %}
+                                <a href="{{ banner.secondary_button_url }}" class="btn btn-secondary">{{ banner.secondary_button_text|default:"Contact Us" }}</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
-                <!-- Default carousel slides using intro-style panels (tractor, truck, crane) with dynamic year -->
+                <!-- Default project-focused carousel slides (MKC-like style, brand aligned) -->
                 <div class="carousel-slide active">
                     <div class="carousel-slide-placeholder construction-img-1"></div>
                     <div class="carousel-overlay"></div>
                     <div class="year-overlay" id="carouselYear">{% now "Y" %}</div>
+                    <div class="carousel-content">
+                        <h1 class="hero-title">
+                            <span class="title-main">PROJECT COMPLETED</span>
+                            <span class="title-sub">Roadwork, Earthwork and Infrastructure Delivery</span>
+                        </h1>
+                        <p class="hero-tagline">Reliable execution with quality, safety and timeline commitment.</p>
+                        <div class="hero-buttons">
+                            <a href="{% url 'projects' %}?status=completed" class="btn btn-primary">View Completed Projects</a>
+                            <a href="{% url 'contact' %}" class="btn btn-secondary">Business Enquiry</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="carousel-slide">
                     <div class="carousel-slide-placeholder construction-img-2"></div>
                     <div class="carousel-overlay"></div>
                     <div class="year-overlay">{% now "Y" %}</div>
+                    <div class="carousel-content">
+                        <h1 class="hero-title">
+                            <span class="title-main">PROJECT ON HAND</span>
+                            <span class="title-sub">Industrial and Civil Construction Capabilities</span>
+                        </h1>
+                        <p class="hero-tagline">Strong manpower, machinery and planning for complex sites.</p>
+                        <div class="hero-buttons">
+                            <a href="{% url 'projects' %}?status=on_hand" class="btn btn-primary">View Projects On Hand</a>
+                            <a href="{% url 'services' %}" class="btn btn-secondary">Explore Services</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="carousel-slide">
                     <div class="carousel-slide-placeholder construction-img-3"></div>
                     <div class="carousel-overlay"></div>
                     <div class="year-overlay">{% now "Y" %}</div>
+                    <div class="carousel-content">
+                        <h1 class="hero-title">
+                            <span class="title-main">ONGOING PROJECTS</span>
+                            <span class="title-sub">Cross-country Piping, Foundations and Plant Work</span>
+                        </h1>
+                        <p class="hero-tagline">Execution-driven team delivering trusted outcomes across sectors.</p>
+                        <div class="hero-buttons">
+                            <a href="{% url 'projects' %}?status=ongoing" class="btn btn-primary">View Ongoing Projects</a>
+                            <a href="{% url 'contact' %}" class="btn btn-secondary">Talk to Our Team</a>
+                        </div>
+                    </div>
                 </div>
             {% endif %}
         </div>
@@ -52,8 +122,8 @@
         
         <!-- Carousel Indicators -->
         <div class="carousel-indicators" id="carouselIndicators">
-            {% if intro_images %}
-                {% for img in intro_images %}
+            {% if banners %}
+                {% for banner in banners %}
                 <span class="indicator {% if forloop.first %}active{% endif %}" onclick="goToSlide({{ forloop.counter0 }})"></span>
                 {% endfor %}
             {% else %}
@@ -64,6 +134,7 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 <!-- Introduction Section -->
 <section class="section introduction-section">
@@ -80,20 +151,16 @@
             </div>
             <div class="intro-images">
                 {% if intro_images %}
-                    {% for img in intro_images %}
-                    <div class="image-card">
-                        <img src="{{ img.image.url }}" alt="{{ img.title }}" class="intro-image">
-                    </div>
-                    {% endfor %}
+                    {% with first_img=intro_images|first %}
+                        {% if first_img %}
+                        <div class="image-card">
+                            <img src="{{ first_img.image.url }}" alt="{{ first_img.title }}" class="intro-image">
+                        </div>
+                        {% endif %}
+                    {% endwith %}
                 {% else %}
                     <div class="image-card">
                         <div class="image-placeholder construction-img-1"></div>
-                    </div>
-                    <div class="image-card">
-                        <div class="image-placeholder construction-img-2"></div>
-                    </div>
-                    <div class="image-card">
-                        <div class="image-placeholder construction-img-3"></div>
                     </div>
                 {% endif %}
             </div>

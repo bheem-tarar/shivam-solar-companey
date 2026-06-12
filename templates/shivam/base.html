@@ -32,6 +32,9 @@
                     <a href="{% url 'team' %}" class="{% if request.resolver_match.url_name == 'team' %}active{% endif %}">Team</a>
                     <a href="{% url 'documents' %}" class="{% if request.resolver_match.url_name == 'documents' %}active{% endif %}">Documents</a>
                     <a href="{% url 'contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+                    {% if request.user.is_staff %}
+                        <a href="{% url 'admin_dashboard' %}" class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">Admin Dashboard</a>
+                    {% endif %}
                 </div>
                 <div class="mobile-menu-toggle">
                     <span></span>
@@ -44,6 +47,17 @@
 
     <!-- Main Content -->
     <main>
+        {% if messages %}
+            <div class="container">
+                <div class="django-messages">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 

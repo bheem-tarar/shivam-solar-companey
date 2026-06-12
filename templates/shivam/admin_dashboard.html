@@ -1,0 +1,60 @@
+{% extends 'shivam/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Shivam Construction{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <p class="subtitle">Yahan se aap website ka content manage kar sakte hain.</p>
+    </div>
+</section>
+
+<section class="section admin-dashboard-section">
+    <div class="container">
+        <div class="admin-grid">
+            <a href="/admin/shivam/companyinfo/" class="admin-card">
+                <h3>Company Info</h3>
+                <p>Naam, tagline, address, phone, email, backgrounds, SEO meta, etc. edit karein.</p>
+            </a>
+
+            <a href="/admin/shivam/service/" class="admin-card">
+                <h3>Services</h3>
+                <p>New services add karein, existing services update ya delete karein.</p>
+            </a>
+
+            <a href="/admin/shivam/completedproject/" class="admin-card">
+                <h3>Projects</h3>
+                <p>Completed, on-hand, ongoing projects manage karein.</p>
+            </a>
+
+            <a href="/admin/shivam/equipment/" class="admin-card">
+                <h3>Equipment</h3>
+                <p>Machines, quantities aur details update karein.</p>
+            </a>
+
+            <a href="/admin/shivam/document/" class="admin-card">
+                <h3>Documents</h3>
+                <p>Certificates, experience, payment documents upload / manage karein.</p>
+            </a>
+
+            <a href="/admin/shivam/companyimage/" class="admin-card">
+                <h3>Website Images</h3>
+                <p>Home/intro, vision, quality, service, project, equipment images upload karein.</p>
+            </a>
+
+            <a href="/admin/shivam/enquiry/" class="admin-card">
+                <h3>Enquiries</h3>
+                <p>Website se aayi hui enquiries ka list dekhein.</p>
+            </a>
+
+            <a href="/admin/auth/user/" class="admin-card">
+                <h3>Users & Permissions</h3>
+                <p>Director/staff users add karein aur permissions set karein.</p>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

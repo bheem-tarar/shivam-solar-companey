@@ -2,25 +2,42 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import FileResponse, Http404, JsonResponse
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_http_methods
 import os
-from .models import CompanyInfo, KeyPerson, Service, CompletedProject, Equipment, Staff, CompanyImage, Document, EquipmentImage
+from .models import CompanyInfo, KeyPerson, Service, CompletedProject, Equipment, Staff, CompanyImage, Document, EquipmentImage, ContactMessage, HomeBanner
 
 def home(request):
     """Home page with introduction and overview"""
     company = CompanyInfo.objects.first()
     if not company:
         company = CompanyInfo.objects.create()
-    
-    # Get introduction images for carousel (get more for carousel)
-    intro_images = CompanyImage.objects.filter(image_type='intro')[:5]
-    
-    # If no intro images, get any available images
+
+    # Show full-screen hero video when active uploaded video banner exists.
+    video_banner = (
+        HomeBanner.objects.filter(
+            is_active=True,
+            video__isnull=False
+        )
+        .exclude(video='')
+        .order_by('order', '-created_at')
+        .first()
+    )
+
+    # Admin-managed homepage banners.
+    banners = HomeBanner.objects.filter(is_active=True)
+
+    # Intro section images (separate from carousel banners)
+    intro_images = CompanyImage.objects.filter(image_type='intro')[:6]
+
+    # If no intro images, get any available images for intro section cards
     if not intro_images:
-        intro_images = CompanyImage.objects.all()[:5]
+        intro_images = CompanyImage.objects.all()[:6]
     
     context = {
         'company': company,
+        'video_banner': video_banner,
+        'banners': banners,
         'intro_images': intro_images,
     }
     return render(request, 'shivam/home.html', context)
@@ -69,7 +86,10 @@ def projects(request):
     company = CompanyInfo.objects.first()
     
     # Get filter from request
-    status_filter = request.GET.get('status', 'all')
+    status_filter = request.GET.get('status', 'all').strip().lower().replace('-', '_').replace(' ', '_')
+    valid_filters = {'all', 'completed', 'on_hand', 'ongoing'}
+    if status_filter not in valid_filters:
+        status_filter = 'all'
     
     # Get all projects
     all_projects = CompletedProject.objects.all()
@@ -111,6 +131,17 @@ def project_detail(request, project_id):
         'project': project,
     }
     return render(request, 'shivam/project_detail.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_dashboard(request):
+    """Front-end shortcuts to Django admin pages (staff only)."""
+    company = CompanyInfo.objects.first()
+    if not company:
+        company = CompanyInfo.objects.create()
+
+    return render(request, 'shivam/admin_dashboard.html', {'company': company})
 
 def equipment(request):
     """Equipment and machinery page"""
@@ -193,11 +224,26 @@ def contact(request):
     company = CompanyInfo.objects.first()
     if not company:
         company = CompanyInfo.objects.create()
-    
-    context = {
-        'company': company,
-    }
-    return render(request, 'shivam/contact.html', context)
+
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        message_text = request.POST.get('message', '').strip()
+
+        if not name or not email or not message_text:
+            messages.error(request, "Please fill in Name, Email and Message.")
+        else:
+            ContactMessage.objects.create(
+                name=name,
+                email=email,
+                phone=phone,
+                message=message_text,
+            )
+            messages.success(request, "Thank you! Your message has been sent. We will contact you soon.")
+            return redirect('contact')
+
+    return render(request, 'shivam/contact.html', {'company': company})
 
 def documents(request):
     """Documents page - list all uploaded documents and handle uploads"""

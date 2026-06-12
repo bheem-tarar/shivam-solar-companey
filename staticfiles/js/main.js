@@ -50,18 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Form submission handling
-    const contactForm = document.querySelector('.contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            // In a real application, this would submit to the server
-            // For now, we'll just show an alert
-            e.preventDefault();
-            alert('Thank you for your message! We will get back to you soon.');
-            this.reset();
-        });
-    }
-    
     // Add animation on scroll
     const observerOptions = {
         threshold: 0.1,
