@@ -33,9 +33,9 @@
         <div class="vision-content">
             {% if vision_images %}
                 <div class="vision-image-wrapper">
-                    {% for img in vision_images %}
+                    {% with img=vision_images|first %}
                         <img src="{{ img.image.url }}" alt="{{ img.title }}" class="vision-image">
-                    {% endfor %}
+                    {% endwith %}
                 </div>
             {% endif %}
             <ul class="vision-list">
@@ -61,9 +61,9 @@
             <p>{% lfield company "quality_policy" fallback_key="quality_text" %}</p>
             {% if quality_images %}
                 <div class="quality-images-wrapper">
-                    {% for img in quality_images %}
+                    {% with img=quality_images|first %}
                         <img src="{{ img.image.url }}" alt="{{ img.title }}" class="quality-image">
-                    {% endfor %}
+                    {% endwith %}
                 </div>
             {% endif %}
             <div class="keywords-section">
@@ -89,26 +89,40 @@
         <div class="section-header">
             <h2 class="section-title">{{ t.key_persons }}</h2>
         </div>
-        <div class="key-persons-grid">
-            {% for person in key_persons %}
-            <div class="person-card">
-                <div class="person-photo-wrap">
-                    {% if person.photo %}
-                        <img src="{{ person.photo.url }}" alt="{{ person.name }}" class="person-photo">
-                    {% else %}
-                        <div class="person-photo-fallback">{{ person.name|first }}</div>
-                    {% endif %}
-                </div>
+
+        {% if ceo %}
+        <div class="ceo-feature-panel">
+            <div class="ceo-feature-media">
+                {% if ceo.photo %}
+                    <img src="{{ ceo.photo.url }}" alt="{{ ceo.name }}" class="ceo-photo">
+                {% else %}
+                    <div class="ceo-photo-fallback" aria-hidden="true">{{ ceo.name|first }}</div>
+                {% endif %}
+            </div>
+            <div class="ceo-feature-copy">
+                <p class="section-eyebrow">{{ t.ceo_label }}</p>
+                <h3>{{ ceo.name }}</h3>
+                <p class="person-role">{% lfield ceo "role" %}</p>
+                <p class="person-description">{% lfield ceo "description" %}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if other_persons %}
+        <div class="key-persons-grid key-persons-text-only">
+            {% for person in other_persons %}
+            <div class="person-card person-card-text">
                 <div class="person-info">
                     <h3>{{ person.name }}</h3>
                     <p class="person-role">{% lfield person "role" %}</p>
                     <p class="person-description">{% lfield person "description" %}</p>
                 </div>
             </div>
-            {% empty %}
-            <p>{{ t.contact_subtitle }}</p>
             {% endfor %}
         </div>
+        {% elif not ceo %}
+            <p>{{ t.contact_subtitle }}</p>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

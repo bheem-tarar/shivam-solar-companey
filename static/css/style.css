@@ -3973,6 +3973,47 @@ body.menu-open {
     box-shadow: var(--shadow);
 }
 
+.ceo-feature-panel {
+    display: grid;
+    grid-template-columns: minmax(200px, 280px) 1fr;
+    gap: 28px;
+    align-items: center;
+    background: var(--white);
+    border: 1px solid var(--line);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+}
+
+.ceo-feature-media {
+    overflow: hidden;
+    border-radius: var(--radius);
+}
+
+.ceo-feature-copy h3 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: clamp(1.4rem, 1.5vw + 0.8rem, 1.9rem);
+    margin: 6px 0 8px;
+    color: var(--ink);
+}
+
+.key-persons-text-only {
+    margin-top: 8px;
+}
+
+.person-card-text {
+    grid-template-columns: 1fr;
+    padding: 16px 18px;
+}
+
+@media (max-width: 768px) {
+    .ceo-feature-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
 .ceo-photo,
 .person-photo {
     width: 100%;

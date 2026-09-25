@@ -46,7 +46,6 @@ LOGIN_URL = '/admin/login/'
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',              # new – admin theme
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,10 +55,16 @@ INSTALLED_APPS = [
     'shivam',
 ]
 
+# Optional admin theme — skip if package missing / broken (e.g. disk-quota installs)
+try:
+    import jazzmin  # noqa: F401
+    INSTALLED_APPS.insert(0, 'jazzmin')
+except Exception:
+    pass
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -67,6 +72,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+try:
+    import whitenoise  # noqa: F401
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+except Exception:
+    pass
 
 # CSRF trusted origins (ngrok + PythonAnywhere). Override with DJANGO_CSRF_TRUSTED_ORIGINS.
 _csrf = os.environ.get(
@@ -168,6 +179,13 @@ STORAGES = {
         'BACKEND': 'django.core.files.storage.FileSystemStorage',
     },
     'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
     },
 }
+try:
+    import whitenoise  # noqa: F401
+    STORAGES['staticfiles'] = {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    }
+except Exception:
+    pass

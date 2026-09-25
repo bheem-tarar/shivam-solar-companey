@@ -73,12 +73,21 @@ def about(request):
     if not company:
         company = CompanyInfo.objects.create()
     
-    key_persons = KeyPerson.objects.all()
-    vision_images = CompanyImage.objects.filter(image_type='vision')[:2]
-    quality_images = CompanyImage.objects.filter(image_type='quality')[:2]
-    
+    key_persons = list(KeyPerson.objects.all())
+    ceo = next((p for p in key_persons if 'ceo' in (p.role or '').lower()), None)
+    if not ceo:
+        ceo = next((p for p in key_persons if 'proprietor' in (p.role or '').lower()), None)
+    if not ceo and key_persons:
+        ceo = key_persons[0]
+    other_persons = [p for p in key_persons if p != ceo]
+    # Keep pages lean: one supporting image max (CEO photo is the main portrait)
+    vision_images = CompanyImage.objects.filter(image_type='vision')[:1]
+    quality_images = CompanyImage.objects.filter(image_type='quality')[:1]
+
     context = {
         'company': company,
+        'ceo': ceo,
+        'other_persons': other_persons,
         'key_persons': key_persons,
         'vision_images': vision_images,
         'quality_images': quality_images,

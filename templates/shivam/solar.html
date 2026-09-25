@@ -42,16 +42,13 @@
 
 <section class="section solar-about-section">
     <div class="container">
-        <div class="solar-about-grid">
+        <div class="solar-about-grid solar-about-text">
             <div>
                 <p class="section-eyebrow">{{ t.solar_brand }}</p>
                 <h2 class="section-title section-title-left">{{ t.solar_about_heading }}</h2>
                 <p>{{ t.solar_about_p1 }}</p>
                 <p>{{ t.solar_about_p2 }}</p>
                 <a href="{% url 'services' %}" class="text-link">← {{ t.solar_back_services }}</a>
-            </div>
-            <div class="solar-about-media">
-                <img src="{% static 'images/solar/solar-rooftop.png' %}" alt="{{ t.solar_brand }}">
             </div>
         </div>
     </div>
@@ -66,9 +63,11 @@
         <div class="solar-services-grid">
             {% for item in solar_services %}
             <article class="solar-service-card {% if item.featured %}solar-service-featured{% endif %}">
+                {% if item.featured %}
                 <div class="solar-service-media">
                     <img src="{% static item.image %}" alt="{{ item.title }}">
                 </div>
+                {% endif %}
                 <h3>{{ item.title }}</h3>
                 <p>{{ item.text }}</p>
             </article>
@@ -91,11 +90,6 @@
                 <p>{{ project.place }}</p>
             </article>
             {% endfor %}
-        </div>
-        <div class="solar-gallery">
-            <img src="{% static 'images/solar/solar-ground.png' %}" alt="{{ t.solar_projects_heading }}">
-            <img src="{% static 'images/solar/solar-inverter.png' %}" alt="{{ t.solar_projects_heading }}">
-            <img src="{% static 'images/solar/solar-farm-rajasthan.png' %}" alt="{{ t.solar_projects_heading }}">
         </div>
     </div>
 </section>
