@@ -33,7 +33,9 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
 # Comma-separated list; override with DJANGO_ALLOWED_HOSTS if needed
 _allowed = os.environ.get(
     'DJANGO_ALLOWED_HOSTS',
-    'shivamcompaney.pythonanywhere.com,www.shivamcompaney.pythonanywhere.com,127.0.0.1,localhost',
+    'shivamcomapney.pythonanywhere.com,www.shivamcomapney.pythonanywhere.com,'
+    'shivamcompaney.pythonanywhere.com,www.shivamcompaney.pythonanywhere.com,'
+    '127.0.0.1,localhost',
 )
 ALLOWED_HOSTS = [h.strip() for h in _allowed.split(',') if h.strip()]
 
@@ -69,6 +71,8 @@ MIDDLEWARE = [
 _csrf = os.environ.get(
     'DJANGO_CSRF_TRUSTED_ORIGINS',
     'https://*.ngrok.io,https://*.ngrok-free.app,'
+    'https://shivamcomapney.pythonanywhere.com,'
+    'https://www.shivamcomapney.pythonanywhere.com,'
     'https://shivamcompaney.pythonanywhere.com,'
     'https://www.shivamcompaney.pythonanywhere.com',
 )
