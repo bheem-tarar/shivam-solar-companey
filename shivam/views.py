@@ -6,6 +6,22 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_http_methods
 import os
 from .models import CompanyInfo, KeyPerson, Service, CompletedProject, Equipment, Staff, CompanyImage, Document, EquipmentImage, ContactMessage, HomeBanner
+from .translations import get_translator
+
+
+def _lang(request):
+    lang = request.session.get('language', 'en')
+    return lang if lang in ('en', 'hi') else 'en'
+
+
+def set_language(request, lang):
+    """Switch UI language (en / hi) and return to the previous page."""
+    if lang in ('en', 'hi'):
+        request.session['language'] = lang
+    next_url = request.GET.get('next', '/')
+    if not next_url.startswith('/'):
+        next_url = '/'
+    return redirect(next_url)
 
 def home(request):
     """Home page with introduction and overview"""
@@ -33,12 +49,21 @@ def home(request):
     # If no intro images, get any available images for intro section cards
     if not intro_images:
         intro_images = CompanyImage.objects.all()[:6]
+
+    key_persons = KeyPerson.objects.all()[:4]
+    ceo = KeyPerson.objects.filter(role__icontains='ceo').first()
+    if not ceo:
+        ceo = KeyPerson.objects.filter(role__icontains='proprietor').first()
+    if not ceo:
+        ceo = KeyPerson.objects.order_by('order').first()
     
     context = {
         'company': company,
         'video_banner': video_banner,
         'banners': banners,
         'intro_images': intro_images,
+        'key_persons': key_persons,
+        'ceo': ceo,
     }
     return render(request, 'shivam/home.html', context)
 
@@ -60,6 +85,30 @@ def about(request):
     }
     return render(request, 'shivam/about.html', context)
 
+def _road_service_fallbacks():
+    """Build bilingual service stubs from road_content when DB is empty."""
+    from shivam.road_content import ROAD_SERVICES, SERVICE_CATEGORY_LABELS
+
+    class _Stub:
+        def __init__(self, item):
+            self._item = item
+            self.category = item['category']
+            self.title = item['title']
+            self.title_hi = item['title_hi']
+            self.description = item['description']
+            self.description_hi = item['description_hi']
+
+        def get_category_display(self):
+            return SERVICE_CATEGORY_LABELS[self.category][0]
+
+    services_by_category = {}
+    for item in ROAD_SERVICES:
+        stub = _Stub(item)
+        category = stub.get_category_display()
+        services_by_category.setdefault(category, []).append(stub)
+    return services_by_category
+
+
 def services(request):
     """Services page"""
     services = Service.objects.all()
@@ -73,6 +122,9 @@ def services(request):
         if category not in services_by_category:
             services_by_category[category] = []
         services_by_category[category].append(service)
+
+    if not services_by_category:
+        services_by_category = _road_service_fallbacks()
     
     context = {
         'services_by_category': services_by_category,
@@ -80,6 +132,39 @@ def services(request):
         'service_images': service_images,
     }
     return render(request, 'shivam/services.html', context)
+
+
+def solar_energy(request):
+    """Sister firm page — Shivam Solar Energy (Rajasthan projects & branches)."""
+    company = CompanyInfo.objects.first()
+    t = get_translator(_lang(request))
+
+    solar_services = [
+        {'title': t.solar_svc_home_title, 'text': t.solar_svc_home_text, 'image': 'images/solar/solar-rooftop.png', 'featured': True},
+        {'title': t.solar_svc_1_title, 'text': t.solar_svc_1_text, 'image': 'images/solar/solar-rooftop.png'},
+        {'title': t.solar_svc_2_title, 'text': t.solar_svc_2_text, 'image': 'images/solar/solar-ground.png'},
+        {'title': t.solar_svc_3_title, 'text': t.solar_svc_3_text, 'image': 'images/solar/solar-inverter.png'},
+    ]
+    solar_projects = [
+        {'title': t.solar_proj_1_title, 'place': t.solar_proj_1_place, 'status': t.solar_status_ongoing},
+        {'title': t.solar_proj_2_title, 'place': t.solar_proj_2_place, 'status': t.solar_status_ongoing},
+        {'title': t.solar_proj_3_title, 'place': t.solar_proj_3_place, 'status': t.solar_status_completed},
+        {'title': t.solar_proj_4_title, 'place': t.solar_proj_4_place, 'status': t.solar_status_completed},
+    ]
+    solar_branches = [
+        {'city': t.solar_br_1_city, 'area': t.solar_br_1_area},
+        {'city': t.solar_br_2_city, 'area': t.solar_br_2_area},
+        {'city': t.solar_br_3_city, 'area': t.solar_br_3_area},
+        {'city': t.solar_br_4_city, 'area': t.solar_br_4_area},
+    ]
+
+    context = {
+        'company': company,
+        'solar_services': solar_services,
+        'solar_projects': solar_projects,
+        'solar_branches': solar_branches,
+    }
+    return render(request, 'shivam/solar.html', context)
 
 def projects(request):
     """Projects page with filtering"""
@@ -148,19 +233,19 @@ def equipment(request):
     equipment_list = Equipment.objects.all()
     company = CompanyInfo.objects.first()
     equipment_images = CompanyImage.objects.filter(image_type='equipment')
-    
-    # Group equipment by category
+
     equipment_by_category = {}
     for item in equipment_list:
         category = item.category or 'Other'
-        if category not in equipment_by_category:
-            equipment_by_category[category] = []
-        equipment_by_category[category].append(item)
-    
+        equipment_by_category.setdefault(category, []).append(item)
+
+    fleet_total = sum(item.quantity for item in equipment_list)
+
     context = {
         'equipment_by_category': equipment_by_category,
         'company': company,
         'equipment_images': equipment_images,
+        'fleet_total': fleet_total,
     }
     return render(request, 'shivam/equipment.html', context)
 
@@ -178,40 +263,35 @@ def equipment_detail(request, equipment_id):
     return render(request, 'shivam/equipment_detail.html', context)
 
 def team(request):
-    """Team and organization structure page"""
+    """Team page — strength cards + site/central structure (no CEO gallery)."""
     staff = Staff.objects.all()
     company = CompanyInfo.objects.first()
-    
-    # Group staff by type
+
     site_staff = staff.filter(staff_type='site')
     central_staff = staff.filter(staff_type='central')
-    
-    # Calculate totals
+
     site_staff_total = sum(item.quantity for item in site_staff)
     central_staff_total = sum(item.quantity for item in central_staff)
     grand_total = site_staff_total + central_staff_total
-    
-    # Group site staff by designation for summary
-    site_staff_summary = {}
+
+    teams_map = {}
     for item in site_staff:
-        designation = item.designation
-        if designation not in site_staff_summary:
-            site_staff_summary[designation] = 0
-        site_staff_summary[designation] += item.quantity
-    
-    # Group central staff by designation for summary
-    central_staff_summary = {}
-    for item in central_staff:
-        designation = item.designation
-        if designation not in central_staff_summary:
-            central_staff_summary[designation] = 0
-        central_staff_summary[designation] += item.quantity
-    
+        team_name = (item.team or '').strip() or 'General'
+        teams_map.setdefault(team_name, [])
+        teams_map[team_name].append(item)
+
+    site_team_panels = [
+        {
+            'name': name,
+            'members': members,
+            'total': sum(m.quantity for m in members),
+        }
+        for name, members in sorted(teams_map.items())
+    ]
+
     context = {
-        'site_staff': site_staff,
-        'central_staff': central_staff,
-        'site_staff_summary': site_staff_summary,
-        'central_staff_summary': central_staff_summary,
+        'site_team_panels': site_team_panels,
+        'central_roles': list(central_staff),
         'site_staff_total': site_staff_total,
         'central_staff_total': central_staff_total,
         'grand_total': grand_total,
@@ -231,8 +311,9 @@ def contact(request):
         phone = request.POST.get('phone', '').strip()
         message_text = request.POST.get('message', '').strip()
 
+        t = get_translator(_lang(request))
         if not name or not email or not message_text:
-            messages.error(request, "Please fill in Name, Email and Message.")
+            messages.error(request, t.msg_error)
         else:
             ContactMessage.objects.create(
                 name=name,
@@ -240,69 +321,83 @@ def contact(request):
                 phone=phone,
                 message=message_text,
             )
-            messages.success(request, "Thank you! Your message has been sent. We will contact you soon.")
+            messages.success(request, t.msg_success)
             return redirect('contact')
 
     return render(request, 'shivam/contact.html', {'company': company})
 
 def documents(request):
-    """Documents page - list all uploaded documents and handle uploads"""
+    """Public document library. Upload is staff-only."""
     company = CompanyInfo.objects.first()
-    
-    # Handle file upload
+    t = get_translator(_lang(request))
+
     if request.method == 'POST':
+        if not request.user.is_authenticated or not request.user.is_staff:
+            messages.error(request, t.doc_upload_forbidden)
+            return redirect('documents')
         try:
-            title = request.POST.get('title', '')
+            title = request.POST.get('title', '').strip()
             document_type = request.POST.get('document_type', 'other')
-            description = request.POST.get('description', '')
+            description = request.POST.get('description', '').strip()
             file = request.FILES.get('file')
-            
+
             if not file:
-                messages.error(request, 'Please select a file to upload.')
+                messages.error(request, t.doc_upload_no_file)
             elif not title:
-                messages.error(request, 'Please enter a document title.')
+                messages.error(request, t.doc_upload_no_title)
             else:
-                # Create document
-                document = Document.objects.create(
+                Document.objects.create(
                     title=title,
                     document_type=document_type,
                     file=file,
-                    description=description
+                    description=description,
                 )
-                messages.success(request, f'Document "{title}" uploaded successfully!')
+                messages.success(request, t.doc_upload_success)
                 return redirect('documents')
-        except Exception as e:
-            messages.error(request, f'Error uploading document: {str(e)}')
-    
-    # Get all documents
+        except Exception:
+            messages.error(request, t.doc_upload_error)
+
     documents_list = Document.objects.all()
-    
-    # Group documents by type
     documents_by_type = {}
     for doc in documents_list:
         doc_type = doc.get_document_type_display()
-        if doc_type not in documents_by_type:
-            documents_by_type[doc_type] = []
-        documents_by_type[doc_type].append(doc)
-    
+        documents_by_type.setdefault(doc_type, []).append(doc)
+
     context = {
         'company': company,
         'documents_by_type': documents_by_type,
         'total_documents': documents_list.count(),
+        'can_upload': request.user.is_authenticated and request.user.is_staff,
     }
     return render(request, 'shivam/documents.html', context)
 
-def download_document(request, document_id):
-    """Download a document"""
+
+def document_detail(request, document_id):
+    """Document detail page for company records."""
     document = get_object_or_404(Document, id=document_id)
-    
+    company = CompanyInfo.objects.first()
+    related = Document.objects.filter(document_type=document.document_type).exclude(id=document.id)[:4]
+    context = {
+        'document': document,
+        'company': company,
+        'related_documents': related,
+        'can_download': True,
+    }
+    return render(request, 'shivam/document_detail.html', context)
+
+
+def download_document(request, document_id):
+    """Download a document (public company files)."""
+    document = get_object_or_404(Document, id=document_id)
+
     try:
         file_path = document.file.path
         if os.path.exists(file_path):
             response = FileResponse(open(file_path, 'rb'), content_type='application/octet-stream')
             response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
             return response
-        else:
-            raise Http404("File not found")
-    except Exception as e:
+        raise Http404("File not found")
+    except Http404:
+        raise
+    except Exception:
         raise Http404("Error downloading file")

@@ -1,13 +1,13 @@
 {% extends 'shivam/base.html' %}
-{% load static %}
+{% load static shivam_tags %}
 
-{% block title %}Project Details - Shivam Construction Company{% endblock %}
+{% block title %}{{ t.project_detail_title }}{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1>Project Details</h1>
-        <p class="subtitle">A closer look at our work</p>
+        <h1>{{ t.project_detail_heading }}</h1>
+        <p class="subtitle">{{ t.project_detail_sub }}</p>
     </div>
 </section>
 
@@ -16,23 +16,23 @@
         <div class="project-detail-layout">
             <div class="project-main-card">
                 <div class="project-header">
-                    <h2 class="project-title">{{ project.type_of_work }}</h2>
+                    <h2 class="project-title">{% lfield project "type_of_work" %}</h2>
                     <span class="status-badge status-{{ project.status }}">
-                        {{ project.get_status_display }}
+                        {% project_status_label project.status %}
                     </span>
                 </div>
 
                 <div class="project-meta">
                     <div>
-                        <h4>Client</h4>
-                        <p>{{ project.work_awarded_by }}</p>
+                        <h4>{{ t.client }}</h4>
+                        <p>{% lfield project "work_awarded_by" %}</p>
                     </div>
                     <div>
-                        <h4>WO Reference</h4>
+                        <h4>{{ t.wo_reference }}</h4>
                         <p>{{ project.wo_reference }}</p>
                     </div>
                     <div>
-                        <h4>Date</h4>
+                        <h4>{{ t.date }}</h4>
                         <p>{{ project.date|date:"d M Y" }}</p>
                     </div>
                 </div>
@@ -44,44 +44,37 @@
                 {% endif %}
 
                 <div class="project-body">
-                    <h3>Scope of Work</h3>
-                    <p>{{ project.type_of_work }}</p>
-                    <p class="project-helper-text">
-                        For more detailed technical scope, BOQ, and drawings, please get in touch with our team.
-                    </p>
+                    <h3>{{ t.scope_of_work }}</h3>
+                    <p>{% lfield project "type_of_work" %}</p>
+                    <p class="project-helper-text">{{ t.project_helper }}</p>
                 </div>
             </div>
 
             <aside class="project-side-card">
-                <h3>Project Snapshot</h3>
+                <h3>{{ t.project_snapshot }}</h3>
                 <ul class="project-fact-list">
                     <li>
-                        <span class="label">Status</span>
-                        <span class="value">{{ project.get_status_display }}</span>
+                        <span class="label">{{ t.col_status }}</span>
+                        <span class="value">{% project_status_label project.status %}</span>
                     </li>
                     <li>
-                        <span class="label">Client</span>
-                        <span class="value">{{ project.work_awarded_by }}</span>
+                        <span class="label">{{ t.client }}</span>
+                        <span class="value">{% lfield project "work_awarded_by" %}</span>
                     </li>
                     <li>
-                        <span class="label">WO Ref.</span>
+                        <span class="label">{{ t.wo_ref_short }}</span>
                         <span class="value">{{ project.wo_reference }}</span>
                     </li>
                     <li>
-                        <span class="label">Date</span>
+                        <span class="label">{{ t.date }}</span>
                         <span class="value">{{ project.date|date:"d/m/Y" }}</span>
                     </li>
                 </ul>
 
-                <a href="{% url 'contact' %}" class="btn btn-primary full-width-btn">
-                    Discuss a similar project
-                </a>
-                <a href="{% url 'projects' %}" class="btn btn-secondary full-width-btn ghost-btn">
-                    Back to all projects
-                </a>
+                <a href="{% url 'contact' %}" class="btn btn-primary full-width-btn">{{ t.discuss_project }}</a>
+                <a href="{% url 'projects' %}" class="btn btn-secondary full-width-btn ghost-btn">{{ t.back_projects }}</a>
             </aside>
         </div>
     </div>
 </section>
 {% endblock %}
-

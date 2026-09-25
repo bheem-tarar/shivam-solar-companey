@@ -1,98 +1,97 @@
 {% extends 'shivam/base.html' %}
-{% load static %}
+{% load static shivam_tags %}
 
-{% block title %}Documents - Shivam Construction Company{% endblock %}
+{% block title %}{{ t.documents_title }}{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
 <section class="page-header">
     <div class="container">
-        <h1>Company Documents</h1>
-        <p class="subtitle">Complete Work, Experience, Payment & Other Documents</p>
+        <h1>{{ t.documents_heading }}</h1>
+        <p class="subtitle">{{ t.documents_subtitle }}</p>
     </div>
 </section>
 
-<!-- Documents Section -->
-<section class="section documents-section page-background" {% if company.contact_bg %}style="background-image: url('{{ company.contact_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/contact-bg.jpg" %}');"{% endif %}>
-    <div class="background-overlay"></div>
+<section class="section documents-intro-section">
     <div class="container">
-        <!-- Upload Form -->
-        <div class="upload-section">
-            <h2 class="section-title">Upload New Document</h2>
+        <div class="docs-intro-panel">
+            <div>
+                <h2>{{ t.docs_intro_title }}</h2>
+                <p>{{ t.docs_intro_text }}</p>
+            </div>
+            <ul class="docs-intro-points">
+                <li>{{ t.docs_point_1 }}</li>
+                <li>{{ t.docs_point_2 }}</li>
+                <li>{{ t.docs_point_3 }}</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="section documents-section">
+    <div class="container">
+        {% if can_upload %}
+        <div class="upload-section staff-only-upload">
+            <div class="upload-badge">{{ t.doc_staff_only }}</div>
+            <h2 class="section-title">{{ t.upload_document }}</h2>
+            <p class="section-note">{{ t.doc_upload_staff_note }}</p>
             <form method="post" enctype="multipart/form-data" class="upload-form">
                 {% csrf_token %}
-                {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="title">Document Title *</label>
-                        <input type="text" id="title" name="title" required placeholder="Enter document title">
+                        <label for="title">{{ t.doc_title_label }}</label>
+                        <input type="text" id="title" name="title" required placeholder="{{ t.doc_title_placeholder }}">
                     </div>
                     <div class="form-group">
-                        <label for="document_type">Document Type *</label>
+                        <label for="document_type">{{ t.doc_type_label }}</label>
                         <select id="document_type" name="document_type" required>
-                            <option value="work">Complete Work Documents</option>
-                            <option value="experience">Experience Documents</option>
-                            <option value="payment">Payment Documents</option>
-                            <option value="certificate">Certificates</option>
-                            <option value="other">Other Documents</option>
+                            <option value="work">{{ t.doc_work }}</option>
+                            <option value="experience">{{ t.doc_experience }}</option>
+                            <option value="payment">{{ t.doc_payment }}</option>
+                            <option value="certificate">{{ t.doc_certificate }}</option>
+                            <option value="other">{{ t.doc_other }}</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="3" placeholder="Optional description"></textarea>
+                    <label for="description">{{ t.doc_desc_label }}</label>
+                    <textarea id="description" name="description" rows="3" placeholder="{{ t.doc_desc_placeholder }}"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="file">Select File *</label>
+                    <label for="file">{{ t.doc_file_label }}</label>
                     <input type="file" id="file" name="file" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
-                    <small class="file-help">Supported formats: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (Max 10MB)</small>
+                    <small class="file-help">{{ t.doc_file_help }}</small>
                 </div>
-                <button type="submit" class="btn btn-primary btn-upload">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-                    </svg>
-                    Upload Document
-                </button>
+                <button type="submit" class="btn btn-primary btn-upload">{{ t.upload_btn }}</button>
             </form>
         </div>
+        {% else %}
+        <div class="docs-locked-note">
+            <p>{{ t.doc_public_note }}</p>
+            {% if not request.user.is_authenticated %}
+            <a href="{% url 'admin:login' %}?next={% url 'documents' %}" class="btn btn-secondary dark">{{ t.doc_staff_login }}</a>
+            {% endif %}
+        </div>
+        {% endif %}
 
         <div class="documents-header">
-            <h2 class="section-title">All Documents</h2>
-            <p class="documents-count">Total Documents: <strong>{{ total_documents }}</strong></p>
+            <h2 class="section-title">{{ t.all_documents }}</h2>
+            <p class="documents-count">{{ t.total_documents }}: <strong>{{ total_documents }}</strong></p>
         </div>
 
         {% if documents_by_type %}
             {% for doc_type, doc_list in documents_by_type.items %}
             <div class="document-category">
-                <h2 class="category-title">{{ doc_type }}</h2>
+                <h2 class="category-title">{{ doc_type|t_doc_type:t }}</h2>
                 <div class="documents-grid">
                     {% for document in doc_list %}
-                    <div class="document-card">
-                        <div class="document-icon">
-                            {% if document.get_file_extension == 'PDF' %}
-                                📄
-                            {% elif document.get_file_extension in 'DOC,DOCX' %}
-                                📝
-                            {% elif document.get_file_extension in 'XLS,XLSX' %}
-                                📊
-                            {% elif document.get_file_extension in 'JPG,JPEG,PNG' %}
-                                🖼️
-                            {% else %}
-                                📎
-                            {% endif %}
+                    <a href="{% url 'document_detail' document.id %}" class="document-card document-card-link">
+                        <div class="document-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
                         </div>
                         <div class="document-info">
-                            <h3>{{ document.title }}</h3>
-                            {% if document.description %}
-                                <p class="document-description">{{ document.description|truncatewords:15 }}</p>
+                            <h3>{% lfield document "title" %}</h3>
+                            {% if document.description or document.description_hi %}
+                                <p class="document-description">{% lfield document "description" %}</p>
                             {% endif %}
                             <div class="document-meta">
                                 <span class="file-type">{{ document.get_file_extension }}</span>
@@ -101,26 +100,19 @@
                             </div>
                         </div>
                         <div class="document-actions">
-                            <a href="{% url 'download_document' document.id %}" class="btn-download" download>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                                </svg>
-                                Download
-                            </a>
+                            <span class="btn-view-doc">{{ t.doc_view_details }}</span>
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
             </div>
             {% endfor %}
         {% else %}
             <div class="no-documents">
-                <div class="no-documents-icon">📁</div>
-                <h3>No Documents Available</h3>
-                <p>Documents will appear here once uploaded through the admin panel.</p>
+                <h3>{{ t.no_documents_title }}</h3>
+                <p>{{ t.no_documents_desc }}</p>
             </div>
         {% endif %}
     </div>
 </section>
 {% endblock %}
-

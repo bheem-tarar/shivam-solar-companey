@@ -6,10 +6,14 @@ class CompanyInfoAdmin(admin.ModelAdmin):
     list_display = ['name', 'phone', 'email']
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'tagline', 'phone', 'email', 'address')
+            'fields': ('name', 'tagline', 'tagline_hi', 'phone', 'email', 'address', 'address_hi')
         }),
         ('Company Details', {
-            'fields': ('introduction', 'vision', 'quality_policy')
+            'fields': (
+                'introduction', 'introduction_hi',
+                'vision', 'vision_hi',
+                'quality_policy', 'quality_policy_hi',
+            )
         }),
         ('Images', {
             'fields': ('logo', 'hero_image')
@@ -34,30 +38,42 @@ class CompanyImageAdmin(admin.ModelAdmin):
 class KeyPersonAdmin(admin.ModelAdmin):
     list_display = ['name', 'role', 'order']
     list_editable = ['order']
+    fields = ['name', 'role', 'role_hi', 'description', 'description_hi', 'photo', 'order']
+    readonly_fields = []
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ['title', 'category', 'order']
     list_filter = ['category']
     list_editable = ['order']
+    fields = ['category', 'title', 'title_hi', 'description', 'description_hi', 'order']
 
 @admin.register(CompletedProject)
 class CompletedProjectAdmin(admin.ModelAdmin):
     list_display = ['work_awarded_by', 'type_of_work', 'status', 'date']
     list_filter = ['status', 'date']
     date_hierarchy = 'date'
-    fields = ['work_awarded_by', 'wo_reference', 'type_of_work', 'status', 'date', 'image', 'order']
+    fields = [
+        'work_awarded_by', 'work_awarded_by_hi',
+        'wo_reference', 'type_of_work', 'type_of_work_hi',
+        'status', 'date', 'image', 'order',
+    ]
 
 class EquipmentImageInline(admin.TabularInline):
     model = EquipmentImage
     extra = 1
-    fields = ['image', 'title', 'description', 'order']
+    fields = ['image', 'title', 'title_hi', 'description', 'description_hi', 'order']
 
 @admin.register(Equipment)
 class EquipmentAdmin(admin.ModelAdmin):
     list_display = ['name', 'quantity', 'category']
     list_filter = ['category']
-    fields = ['name', 'quantity', 'category', 'image', 'description', 'specifications', 'order']
+    fields = [
+        'name', 'name_hi', 'quantity',
+        'category', 'category_hi',
+        'image', 'description', 'description_hi',
+        'specifications', 'specifications_hi', 'order',
+    ]
     inlines = [EquipmentImageInline]
 
 @admin.register(EquipmentImage)
@@ -71,6 +87,7 @@ class EquipmentImageAdmin(admin.ModelAdmin):
 class StaffAdmin(admin.ModelAdmin):
     list_display = ['designation', 'staff_type', 'team', 'quantity']
     list_filter = ['staff_type', 'team']
+    fields = ['name', 'designation', 'designation_hi', 'staff_type', 'team', 'quantity', 'order']
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
@@ -79,7 +96,7 @@ class DocumentAdmin(admin.ModelAdmin):
     list_editable = ['order']
     search_fields = ['title', 'description']
     readonly_fields = ['uploaded_at', 'get_file_size']
-    fields = ['title', 'document_type', 'file', 'description', 'order', 'uploaded_at', 'get_file_size']
+    fields = ['title', 'title_hi', 'document_type', 'file', 'description', 'description_hi', 'order', 'uploaded_at', 'get_file_size']
     
     def get_file_size(self, obj):
         return obj.get_file_size()
@@ -101,9 +118,11 @@ class HomeBannerAdmin(admin.ModelAdmin):
     search_fields = ['title', 'subtitle', 'tagline']
     readonly_fields = ['media_type']
     fields = [
-        'title', 'subtitle', 'tagline',
+        'title', 'title_hi',
+        'subtitle', 'subtitle_hi',
+        'tagline', 'tagline_hi',
         'media_type', 'video',
-        'button_text', 'button_url',
-        'secondary_button_text', 'secondary_button_url',
-        'is_active', 'order'
+        'button_text', 'button_text_hi', 'button_url',
+        'secondary_button_text', 'secondary_button_text_hi', 'secondary_button_url',
+        'is_active', 'order',
     ]

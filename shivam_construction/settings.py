@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1povk^holb^d1l#**c$#gi+@c!g16h65^nu-^8_+_@tskfuaqo'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-1povk^holb^d1l#**c$#gi+@c!g16h65^nu-^8_+_@tskfuaqo',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# On PythonAnywhere set: export DJANGO_DEBUG=False
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = ['*']  # Allow all hosts for ngrok
+# Comma-separated list; override with DJANGO_ALLOWED_HOSTS if needed
+_allowed = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    'shivamcompaney.pythonanywhere.com,www.shivamcompaney.pythonanywhere.com,127.0.0.1,localhost',
+)
+ALLOWED_HOSTS = [h.strip() for h in _allowed.split(',') if h.strip()]
 
 # Front-end dashboard uses login_required; send users to admin login
 LOGIN_URL = '/admin/login/'
@@ -55,8 +65,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CSRF settings for ngrok
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok.io', 'https://*.ngrok-free.app']
+# CSRF trusted origins (ngrok + PythonAnywhere). Override with DJANGO_CSRF_TRUSTED_ORIGINS.
+_csrf = os.environ.get(
+    'DJANGO_CSRF_TRUSTED_ORIGINS',
+    'https://*.ngrok.io,https://*.ngrok-free.app,'
+    'https://shivamcompaney.pythonanywhere.com,'
+    'https://www.shivamcompaney.pythonanywhere.com',
+)
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(',') if o.strip()]
 
 ROOT_URLCONF = 'shivam_construction.urls'
 
@@ -70,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'shivam.context_processors.site_context',
             ],
         },
     },

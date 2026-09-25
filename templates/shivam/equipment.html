@@ -1,79 +1,60 @@
 {% extends 'shivam/base.html' %}
-{% load static %}
+{% load static shivam_tags %}
 
-{% block title %}Equipment - Shivam Construction Company{% endblock %}
+{% block title %}{{ t.equipment_title }}{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
 <section class="page-header">
     <div class="container">
-        <h1>Equipment, Plant and Machinery</h1>
-        <p class="subtitle">Our State-of-the-Art Construction Equipment</p>
+        <h1>{{ t.equipment_heading }}</h1>
+        <p class="subtitle">{{ t.equipment_subtitle }}</p>
     </div>
 </section>
 
-<!-- Equipment Section -->
-<section class="section equipment-section page-background" {% if company.equipment_bg %}style="background-image: url('{{ company.equipment_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/equipment-bg.jpg" %}');"{% endif %}>
-    <div class="background-overlay"></div>
+<section class="section equipment-summary-section">
+    <div class="container">
+        <div class="equipment-summary-bar">
+            <div>
+                <span class="eq-sum-num">{{ fleet_total }}</span>
+                <span class="eq-sum-label">{{ t.equipment_fleet_total }}</span>
+            </div>
+            <p>{{ t.equipment_fleet_note }}</p>
+        </div>
+    </div>
+</section>
+
+<section class="section equipment-section">
     <div class="container">
         {% for category, equipment_list in equipment_by_category.items %}
         <div class="equipment-category">
-            <h2 class="category-title">{{ category }}</h2>
+            <h2 class="category-title">{% tdesig category %}</h2>
             <div class="equipment-grid">
                 {% for item in equipment_list %}
                 <a href="{% url 'equipment_detail' item.id %}" class="equipment-card equipment-card-link">
-                    {% if item.image %}
-                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="equipment-image">
-                    {% else %}
-                        <div class="equipment-icon">🚜</div>
-                    {% endif %}
-                    <h3>{{ item.name }}</h3>
-                    <p class="equipment-quantity">Quantity: <strong>{{ item.quantity }}</strong></p>
-                    <div class="view-images-link">View Images →</div>
+                    <div class="equipment-media">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{% lfield item "name" %}" class="equipment-image">
+                        {% else %}
+                            <div class="equipment-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 17H3V9l3-4h7l2 4h4v8h-2M10 17h4"/></svg>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="equipment-body">
+                        <h3>{% lfield item "name" %}</h3>
+                        <p class="equipment-quantity">{{ t.quantity }}: <strong>{{ item.quantity }}</strong></p>
+                        {% if item.description or item.description_hi %}
+                        <p class="equipment-snippet">{% lfield item "description" %}</p>
+                        {% endif %}
+                        <span class="view-images-link">{{ t.view_images }}</span>
+                    </div>
                 </a>
                 {% endfor %}
             </div>
         </div>
         {% empty %}
-        <!-- Default equipment if none in database -->
-        <div class="equipment-category">
-            <h2 class="category-title">Heavy Earth-Moving Equipment</h2>
-            <div class="equipment-grid">
-                <div class="equipment-card">
-                    <div class="equipment-icon">🚜</div>
-                    <h3>Excavators</h3>
-                    <p class="equipment-quantity">Various sizes available</p>
-                    <div class="view-images-link">View Images →</div>
-                </div>
-                <div class="equipment-card">
-                    <div class="equipment-icon">🚛</div>
-                    <h3>Dump Trucks</h3>
-                    <p class="equipment-quantity">Multiple units</p>
-                </div>
-                <div class="equipment-card">
-                    <div class="equipment-icon">🚧</div>
-                    <h3>Motor Graders</h3>
-                    <p class="equipment-quantity">Available</p>
-                </div>
-                <div class="equipment-card">
-                    <div class="equipment-icon">🏗️</div>
-                    <h3>Bulldozers</h3>
-                    <p class="equipment-quantity">Available</p>
-                </div>
-                <div class="equipment-card">
-                    <div class="equipment-icon">⚙️</div>
-                    <h3>Road Rollers</h3>
-                    <p class="equipment-quantity">Available</p>
-                </div>
-                <div class="equipment-card">
-                    <div class="equipment-icon">🔧</div>
-                    <h3>Loaders</h3>
-                    <p class="equipment-quantity">Available</p>
-                </div>
-            </div>
-        </div>
+        <p class="empty-note">{{ t.equipment_empty }}</p>
         {% endfor %}
     </div>
 </section>
 {% endblock %}
-

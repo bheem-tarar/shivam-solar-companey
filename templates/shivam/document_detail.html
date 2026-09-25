@@ -1,0 +1,80 @@
+{% extends 'shivam/base.html' %}
+{% load static shivam_tags %}
+
+{% block title %}{% lfield document "title" %} - {{ t.documents_heading }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>{% lfield document "title" %}</h1>
+        <p class="subtitle">{{ document.get_document_type_display }}</p>
+    </div>
+</section>
+
+<section class="section document-detail-section">
+    <div class="container">
+        <a href="{% url 'documents' %}" class="btn-back">← {{ t.docs_back }}</a>
+
+        <div class="doc-detail-panel">
+            <div class="doc-detail-main">
+                <p class="section-eyebrow">{{ t.documents_heading }}</p>
+                <h2>{% lfield document "title" %}</h2>
+                {% if document.description or document.description_hi %}
+                <p class="doc-detail-desc">{% lfield document "description" %}</p>
+                {% else %}
+                <p class="doc-detail-desc">{{ t.doc_detail_fallback }}</p>
+                {% endif %}
+
+                <dl class="doc-meta-list">
+                    <div>
+                        <dt>{{ t.doc_type_label }}</dt>
+                        <dd>{{ document.get_document_type_display }}</dd>
+                    </div>
+                    <div>
+                        <dt>{{ t.doc_file_type }}</dt>
+                        <dd>{{ document.get_file_extension }}</dd>
+                    </div>
+                    <div>
+                        <dt>{{ t.doc_file_size }}</dt>
+                        <dd>{{ document.get_file_size }}</dd>
+                    </div>
+                    <div>
+                        <dt>{{ t.doc_uploaded_on }}</dt>
+                        <dd>{{ document.uploaded_at|date:"d M Y, H:i" }}</dd>
+                    </div>
+                </dl>
+
+                <div class="doc-detail-actions">
+                    <a href="{% url 'download_document' document.id %}" class="btn btn-primary">{{ t.download }}</a>
+                    <a href="{% url 'contact' %}" class="btn btn-secondary dark">{{ t.contact_us }}</a>
+                </div>
+            </div>
+            <aside class="doc-detail-aside">
+                <h3>{{ t.doc_help_title }}</h3>
+                <p>{{ t.doc_help_text }}</p>
+                <p><strong>{{ t.phone }}:</strong> <a href="tel:{{ company.phone|default:'6350092193' }}">{{ company.phone|default:"6350092193" }}</a></p>
+                <p><strong>{{ t.email }}:</strong> <a href="mailto:{{ company.email|default:'scccompany91@gmail.com' }}">{{ company.email|default:"scccompany91@gmail.com" }}</a></p>
+            </aside>
+        </div>
+
+        {% if related_documents %}
+        <div class="related-docs">
+            <h3>{{ t.doc_related }}</h3>
+            <div class="documents-grid">
+                {% for related in related_documents %}
+                <a href="{% url 'document_detail' related.id %}" class="document-card document-card-link">
+                    <div class="document-info">
+                        <h3>{% lfield related "title" %}</h3>
+                        <div class="document-meta">
+                            <span class="file-type">{{ related.get_file_extension }}</span>
+                            <span class="upload-date">{{ related.uploaded_at|date:"d M Y" }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,13 +1,13 @@
 {% extends 'shivam/base.html' %}
 {% load static %}
 
-{% block title %}Admin Dashboard - Shivam Construction{% endblock %}
+{% block title %}{{ t.admin_title }}{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1>Admin Dashboard</h1>
-        <p class="subtitle">Yahan se aap website ka content manage kar sakte hain.</p>
+        <h1>{{ t.admin_heading }}</h1>
+        <p class="subtitle">{{ t.admin_subtitle }}</p>
     </div>
 </section>
 
@@ -15,46 +15,45 @@
     <div class="container">
         <div class="admin-grid">
             <a href="/admin/shivam/companyinfo/" class="admin-card">
-                <h3>Company Info</h3>
-                <p>Naam, tagline, address, phone, email, backgrounds, SEO meta, etc. edit karein.</p>
+                <h3>{{ t.admin_company }}</h3>
+                <p>{{ t.admin_company_desc }}</p>
             </a>
 
             <a href="/admin/shivam/service/" class="admin-card">
-                <h3>Services</h3>
-                <p>New services add karein, existing services update ya delete karein.</p>
+                <h3>{{ t.admin_services }}</h3>
+                <p>{{ t.admin_services_desc }}</p>
             </a>
 
             <a href="/admin/shivam/completedproject/" class="admin-card">
-                <h3>Projects</h3>
-                <p>Completed, on-hand, ongoing projects manage karein.</p>
+                <h3>{{ t.admin_projects }}</h3>
+                <p>{{ t.admin_projects_desc }}</p>
             </a>
 
             <a href="/admin/shivam/equipment/" class="admin-card">
-                <h3>Equipment</h3>
-                <p>Machines, quantities aur details update karein.</p>
+                <h3>{{ t.admin_equipment }}</h3>
+                <p>{{ t.admin_equipment_desc }}</p>
             </a>
 
             <a href="/admin/shivam/document/" class="admin-card">
-                <h3>Documents</h3>
-                <p>Certificates, experience, payment documents upload / manage karein.</p>
+                <h3>{{ t.admin_documents }}</h3>
+                <p>{{ t.admin_documents_desc }}</p>
             </a>
 
             <a href="/admin/shivam/companyimage/" class="admin-card">
-                <h3>Website Images</h3>
-                <p>Home/intro, vision, quality, service, project, equipment images upload karein.</p>
+                <h3>{{ t.admin_images }}</h3>
+                <p>{{ t.admin_images_desc }}</p>
             </a>
 
             <a href="/admin/shivam/enquiry/" class="admin-card">
-                <h3>Enquiries</h3>
-                <p>Website se aayi hui enquiries ka list dekhein.</p>
+                <h3>{{ t.admin_enquiries }}</h3>
+                <p>{{ t.admin_enquiries_desc }}</p>
             </a>
 
             <a href="/admin/auth/user/" class="admin-card">
-                <h3>Users & Permissions</h3>
-                <p>Director/staff users add karein aur permissions set karein.</p>
+                <h3>{{ t.admin_users }}</h3>
+                <p>{{ t.admin_users_desc }}</p>
             </a>
         </div>
     </div>
 </section>
 {% endblock %}
-

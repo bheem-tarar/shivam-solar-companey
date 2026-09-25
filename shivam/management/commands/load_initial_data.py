@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
+
 from shivam.models import CompanyInfo, KeyPerson, Service, CompletedProject, Equipment, Staff
+from shivam.road_content import COMPANY_CONTENT, KEY_PERSONS, ROAD_SERVICES
 
 class Command(BaseCommand):
     help = 'Load initial data for Shivam Construction Company'
@@ -9,13 +11,17 @@ class Command(BaseCommand):
         company, created = CompanyInfo.objects.get_or_create(
             name="Shivam Construction Company",
             defaults={
-                'tagline': 'Civil Contractor & General Order Suppliers',
+                'tagline': COMPANY_CONTENT['tagline'],
+                'tagline_hi': COMPANY_CONTENT['tagline_hi'],
                 'phone': '6350092193',
                 'email': 'scccompany91@gmail.com',
-                'address': 'SHOP NO. 05, NEAR INDANE GAS OFFICE, BASANT VIHAR COLONY, SURATGARH, SRI GANGANAGAR, RAJASTHAN, 335804',
-                'introduction': 'Shivam Construction Company is engaged in large format earthworks, cross-country piping, irrigation works, industrial plant buildings, commercial and IT spaces, plant fabrication and erection (especially in power, petrochemical, and pharmaceutical areas).',
-                'vision': 'To become a leading professional one solution engineering consultancy, Construction organization and asset builder in large format earth works, Industrial plant construction and commercial building construction with best national & international quality standards.',
-                'quality_policy': 'Our policy at SCC is to exceed the customer expectations by understanding their needs and delivering them with specified quality, within agreed time by becoming their trusted partners through constant interaction and continuous improvement by enabling a positive and creative environment.'
+                'address': 'BUILDING NO./FLAT NO.: MEEL COLONY KE SAMANE, ROAD/STREET: WARD NO. 03 NEW, CITY/TOWN/VILLAGE: SURATGARH, DISTRICT: SRI GANGANAGAR, STATE: RAJASTHAN, PIN CODE: 335804',
+                'introduction': COMPANY_CONTENT['introduction'],
+                'introduction_hi': COMPANY_CONTENT['introduction_hi'],
+                'vision': COMPANY_CONTENT['vision'],
+                'vision_hi': COMPANY_CONTENT['vision_hi'],
+                'quality_policy': COMPANY_CONTENT['quality_policy'],
+                'quality_policy_hi': COMPANY_CONTENT['quality_policy_hi'],
             }
         )
         if created:
@@ -23,67 +29,30 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.SUCCESS('Company info already exists'))
 
-        # Key Persons
-        key_persons_data = [
-            {
-                'name': 'Mr. V. K. Choudhary',
-                'role': 'Managing Director',
-                'description': 'A natural entrepreneur with excellent experience in large format Earth works, Cross country Pipe lines, road works, etc. He hails from a business family with enormous experience in project implementation.',
-                'order': 1
-            },
-            {
-                'name': 'Mr. Praveen Acharya',
-                'role': 'Director',
-                'description': 'A Post graduate in Arts. After acquiring working experience in reputed organizations, he has been inducted into the board of Directors and took over the responsibility for Finance and accounting.',
-                'order': 2
-            },
-            {
-                'name': 'Mr. Rakesh Kumar',
-                'role': 'Director',
-                'description': 'A Post graduate in Arts. After acquiring working experience in reputed organizations, he has been inducted into the board of Directors and took over the responsibility of HR and Admn.',
-                'order': 3
-            },
-            {
-                'name': 'Mr. Chanderkant',
-                'role': 'Technical Advisor',
-                'description': 'A highly knowledgeable and successful project professional who proved himself by independently executing large power plant projects. His background with KC Group, BHEL, is mentioned as taking the company to new heights.',
-                'order': 4
-            }
-        ]
-
-        for person_data in key_persons_data:
+        for person_data in KEY_PERSONS:
             person, created = KeyPerson.objects.get_or_create(
                 name=person_data['name'],
-                defaults=person_data
+                defaults={
+                    'role': person_data['role'],
+                    'role_hi': person_data['role_hi'],
+                    'description': person_data['description'],
+                    'description_hi': person_data['description_hi'],
+                    'order': person_data['order'],
+                },
             )
             if created:
                 self.stdout.write(self.style.SUCCESS(f'Created key person: {person_data["name"]}'))
 
-        # Services
-        services_data = [
-            # Industrial and Commercial Buildings
-            {'category': 'industrial', 'title': 'Construction of Industrial Warehouses', 'description': 'Expert construction of large-scale industrial warehouses with modern facilities and infrastructure.', 'order': 1},
-            {'category': 'industrial', 'title': 'Construction of Commercial Buildings and Towers', 'description': 'Design and construction of commercial buildings and high-rise towers with state-of-the-art facilities.', 'order': 2},
-            {'category': 'industrial', 'title': 'Equipment Erection', 'description': 'Professional equipment erection services for industrial and commercial facilities.', 'order': 3},
-            # Civil
-            {'category': 'civil', 'title': 'Large Format Earth Works and Road Works', 'description': 'Comprehensive earthworks and road construction services for large-scale projects.', 'order': 1},
-            {'category': 'civil', 'title': 'Contour Survey, Grading and Leveling', 'description': 'Professional surveying, grading, leveling, and setting out services for construction projects.', 'order': 2},
-            {'category': 'civil', 'title': 'Construction of Foundations', 'description': 'Expert foundation construction for industrial buildings and heavy equipment.', 'order': 3},
-            {'category': 'civil', 'title': 'Canal Excavation and Lining', 'description': 'Canal excavation, lining, strengthening of banks, and associated head works.', 'order': 4},
-            {'category': 'civil', 'title': 'Water Storage Solutions', 'description': 'Construction of Ash ponds, water storage tanks, and reservoirs.', 'order': 5},
-            {'category': 'civil', 'title': 'Control Blasting / Rock Blasting Works', 'description': 'Professional and controlled blasting services for rock excavation projects.', 'order': 6},
-            # Cross Country Piping
-            {'category': 'piping', 'title': 'Survey, Marking, and ROU Formation', 'description': 'Complete survey, marking, and Right of Way (ROU) formation services for pipeline projects.', 'order': 1},
-            {'category': 'piping', 'title': 'Stringing, Trench Work, Welding, Laying and Testing', 'description': 'End-to-end pipeline services including stringing, trench work, welding, laying, and testing.', 'order': 2},
-            {'category': 'piping', 'title': 'Valve Stations and Pump Houses', 'description': 'Construction of valve stations and pump houses for pipeline infrastructure.', 'order': 3},
-            {'category': 'piping', 'title': 'Intake Wells and Access Bridges', 'description': 'Construction of intake wells and fabrication and erection of access bridges.', 'order': 4},
-        ]
-
-        for service_data in services_data:
+        for service_data in ROAD_SERVICES:
             service, created = Service.objects.get_or_create(
                 category=service_data['category'],
                 title=service_data['title'],
-                defaults=service_data
+                defaults={
+                    'title_hi': service_data['title_hi'],
+                    'description': service_data['description'],
+                    'description_hi': service_data['description_hi'],
+                    'order': service_data['order'],
+                },
             )
             if created:
                 self.stdout.write(self.style.SUCCESS(f'Created service: {service_data["title"]}'))
@@ -142,12 +111,12 @@ class Command(BaseCommand):
 
         # Equipment (sample data)
         equipment_data = [
-            {'name': 'Excavators', 'quantity': 5, 'category': 'Heavy Equipment', 'order': 1},
-            {'name': 'Dump Trucks', 'quantity': 8, 'category': 'Heavy Equipment', 'order': 2},
-            {'name': 'Motor Graders', 'quantity': 3, 'category': 'Heavy Equipment', 'order': 3},
-            {'name': 'Bulldozers', 'quantity': 4, 'category': 'Heavy Equipment', 'order': 4},
-            {'name': 'Road Rollers', 'quantity': 3, 'category': 'Heavy Equipment', 'order': 5},
-            {'name': 'Loaders', 'quantity': 6, 'category': 'Heavy Equipment', 'order': 6},
+            {'name': 'Excavators', 'quantity': 5, 'category': 'Heavy Earth-Moving Equipment', 'order': 1},
+            {'name': 'Dump Trucks', 'quantity': 8, 'category': 'Heavy Earth-Moving Equipment', 'order': 2},
+            {'name': 'Motor Graders', 'quantity': 3, 'category': 'Heavy Earth-Moving Equipment', 'order': 3},
+            {'name': 'Bulldozers', 'quantity': 4, 'category': 'Heavy Earth-Moving Equipment', 'order': 4},
+            {'name': 'Road Rollers', 'quantity': 3, 'category': 'Heavy Earth-Moving Equipment', 'order': 5},
+            {'name': 'Loaders', 'quantity': 6, 'category': 'Heavy Earth-Moving Equipment', 'order': 6},
         ]
 
         for eq_data in equipment_data:

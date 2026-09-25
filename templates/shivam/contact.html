@@ -1,65 +1,91 @@
 {% extends 'shivam/base.html' %}
-{% load static %}
+{% load static shivam_tags %}
 
-{% block title %}Contact Us - Shivam Construction Company{% endblock %}
+{% block title %}{{ t.contact_title }}{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
 <section class="page-header">
     <div class="container">
-        <h1>Contact Us</h1>
-        <p class="subtitle">Get in touch with us for your construction needs</p>
+        <h1>{{ t.contact_heading }}</h1>
+        <p class="subtitle">{{ t.contact_subtitle }}</p>
     </div>
 </section>
 
-<!-- Contact Section -->
-<section class="section contact-section page-background" {% if company.contact_bg %}style="background-image: url('{{ company.contact_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/contact-bg.jpg" %}');"{% endif %}>
-    <div class="background-overlay"></div>
+<section class="section contact-section">
     <div class="container">
         <div class="contact-wrapper">
             <div class="contact-info">
+                <h2 class="contact-side-title">{{ t.contact_reach }}</h2>
                 <div class="contact-card">
-                    <div class="contact-icon">📞</div>
-                    <h3>Phone</h3>
-                    <p><a href="tel:{{ company.phone|default:'6350092193' }}">{{ company.phone|default:"6350092193" }}</a></p>
+                    <div class="contact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v2a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.8 19.8 0 013.11 4.18 2 2 0 015.11 2h2a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+                    </div>
+                    <div>
+                        <h3>{{ t.phone }}</h3>
+                        <p><a href="tel:{{ company.phone|default:'6350092193' }}">{{ company.phone|default:"6350092193" }}</a></p>
+                    </div>
                 </div>
                 <div class="contact-card">
-                    <div class="contact-icon">✉️</div>
-                    <h3>Email</h3>
-                    <p><a href="mailto:{{ company.email|default:'scccompany91@gmail.com' }}">{{ company.email|default:"scccompany91@gmail.com" }}</a></p>
+                    <div class="contact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg>
+                    </div>
+                    <div>
+                        <h3>{{ t.email }}</h3>
+                        <p><a href="mailto:{{ company.email|default:'scccompany91@gmail.com' }}">{{ company.email|default:"scccompany91@gmail.com" }}</a></p>
+                    </div>
                 </div>
                 <div class="contact-card">
-                    <div class="contact-icon">📍</div>
-                    <h3>Address</h3>
-                    <p>{{ company.address|default:"SHOP NO. 05, NEAR INDANE GAS OFFICE, BASANT VIHAR COLONY, SURATGARH, SRI GANGANAGAR, RAJASTHAN, 335804" }}</p>
+                    <div class="contact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <div>
+                        <h3>{{ t.address }}</h3>
+                        <p>{% lfield company "address" %}</p>
+                    </div>
                 </div>
+                <div class="contact-card contact-card-soft">
+                    <div class="contact-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    </div>
+                    <div>
+                        <h3>{{ t.contact_hours }}</h3>
+                        <p>{{ t.contact_hours_text }}</p>
+                    </div>
+                </div>
+                <div class="contact-direct-actions">
+                    <a href="https://wa.me/91{{ company.phone|default:'6350092193' }}" target="_blank" rel="noopener" class="btn btn-whatsapp">{{ t.bid_btn_wa }}</a>
+                    <a href="tel:{{ company.phone|default:'6350092193' }}" class="btn btn-secondary dark">{{ t.bid_btn_call }}</a>
+                </div>
+                <p class="contact-map-note">{{ t.contact_map_note }}</p>
             </div>
-            
+
             <div class="contact-form-wrapper">
-                <h2>Send us a Message</h2>
+                <h2>{{ t.send_message }}</h2>
+                <p class="form-lead">{{ t.bid_text }}</p>
                 <form class="contact-form" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" required>
+                        <label for="name">{{ t.form_name }}</label>
+                        <input type="text" id="name" name="name" required autocomplete="name">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">{{ t.form_email }}</label>
+                            <input type="email" id="email" name="email" required autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">{{ t.form_phone }}</label>
+                            <input type="tel" id="phone" name="phone" autocomplete="tel">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="message">{{ t.form_message }}</label>
+                        <textarea id="message" name="message" rows="6" required placeholder="BOQ / tender / site location / work type"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="tel" id="phone" name="phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <button type="submit" class="btn btn-primary btn-block">{{ t.form_submit }}</button>
                 </form>
             </div>
         </div>
     </div>
 </section>
 {% endblock %}
-

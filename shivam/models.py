@@ -4,13 +4,18 @@ from django.core.exceptions import ValidationError
 # Company Information Model
 class CompanyInfo(models.Model):
     name = models.CharField(max_length=200, default="Shivam Construction Company")
-    tagline = models.CharField(max_length=300, default="Civil Contractor & General Order Suppliers")
+    tagline = models.CharField(max_length=300, default="Road Earthwork, Soil Leveling & Canal Lining Contractor")
+    tagline_hi = models.CharField(max_length=300, blank=True, verbose_name="Tagline (Hindi)")
     phone = models.CharField(max_length=20, default="6350092193")
     email = models.EmailField(default="scccompany91@gmail.com")
-    address = models.TextField(default="SHOP NO. 05, NEAR INDANE GAS OFFICE, BASANT VIHAR COLONY, SURATGARH, SRI GANGANAGAR, RAJASTHAN, 335804")
+    address = models.TextField(default="BUILDING NO./FLAT NO.: MEEL COLONY KE SAMANE, ROAD/STREET: WARD NO. 03 NEW, CITY/TOWN/VILLAGE: SURATGARH, DISTRICT: SRI GANGANAGAR, STATE: RAJASTHAN, PIN CODE: 335804")
+    address_hi = models.TextField(blank=True, verbose_name="Address (Hindi)")
     vision = models.TextField(blank=True)
+    vision_hi = models.TextField(blank=True, verbose_name="Vision (Hindi)")
     quality_policy = models.TextField(blank=True)
+    quality_policy_hi = models.TextField(blank=True, verbose_name="Quality Policy (Hindi)")
     introduction = models.TextField(blank=True)
+    introduction_hi = models.TextField(blank=True, verbose_name="Introduction (Hindi)")
     logo = models.ImageField(upload_to='company/', blank=True, null=True)
     hero_image = models.ImageField(upload_to='company/', blank=True, null=True)
     instagram_url = models.URLField(blank=True, default="https://www.instagram.com/shivamconstruction")
@@ -42,9 +47,11 @@ class CompanyImage(models.Model):
     ]
     
     title = models.CharField(max_length=200)
+    title_hi = models.CharField(max_length=200, blank=True, verbose_name="Title (Hindi)")
     image = models.ImageField(upload_to='gallery/')
     image_type = models.CharField(max_length=20, choices=IMAGE_TYPES, default='general')
     description = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True, verbose_name="Description (Hindi)")
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -59,7 +66,10 @@ class CompanyImage(models.Model):
 class KeyPerson(models.Model):
     name = models.CharField(max_length=200)
     role = models.CharField(max_length=200)
+    role_hi = models.CharField(max_length=200, blank=True, verbose_name="Role (Hindi)")
     description = models.TextField()
+    description_hi = models.TextField(blank=True, verbose_name="Description (Hindi)")
+    photo = models.ImageField(upload_to='team/', blank=True, null=True, verbose_name="Photo / CEO image")
     order = models.IntegerField(default=0)
     
     class Meta:
@@ -72,14 +82,16 @@ class KeyPerson(models.Model):
 # Services Model
 class Service(models.Model):
     SERVICE_CATEGORIES = [
-        ('industrial', 'Industrial and Commercial Buildings'),
-        ('civil', 'Civil'),
-        ('piping', 'Cross Country Piping'),
+        ('road', 'Road Earthwork & Soil Leveling'),
+        ('bridge', 'Bridge & Flyover Earthwork'),
+        ('canal', 'Canal & Nahar Lining (Rajasthan)'),
     ]
     
     category = models.CharField(max_length=50, choices=SERVICE_CATEGORIES)
     title = models.CharField(max_length=200)
+    title_hi = models.CharField(max_length=200, blank=True, verbose_name="Title (Hindi)")
     description = models.TextField()
+    description_hi = models.TextField(blank=True, verbose_name="Description (Hindi)")
     order = models.IntegerField(default=0)
     
     class Meta:
@@ -98,8 +110,10 @@ class CompletedProject(models.Model):
     ]
     
     work_awarded_by = models.CharField(max_length=200)
+    work_awarded_by_hi = models.CharField(max_length=200, blank=True, verbose_name="Work Awarded By (Hindi)")
     wo_reference = models.CharField(max_length=200)
     type_of_work = models.CharField(max_length=300)
+    type_of_work_hi = models.CharField(max_length=300, blank=True, verbose_name="Type of Work (Hindi)")
     date = models.DateField()
     status = models.CharField(max_length=20, choices=PROJECT_STATUS, default='completed')
     image = models.ImageField(upload_to='projects/', blank=True, null=True)
@@ -115,11 +129,15 @@ class CompletedProject(models.Model):
 # Equipment Model
 class Equipment(models.Model):
     name = models.CharField(max_length=200)
+    name_hi = models.CharField(max_length=200, blank=True, verbose_name="Name (Hindi)")
     quantity = models.IntegerField(default=0)
     category = models.CharField(max_length=100, blank=True)
+    category_hi = models.CharField(max_length=100, blank=True, verbose_name="Category (Hindi)")
     image = models.ImageField(upload_to='equipment/', blank=True, null=True)
     description = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True, verbose_name="Description (Hindi)")
     specifications = models.TextField(blank=True, help_text="Technical specifications")
+    specifications_hi = models.TextField(blank=True, verbose_name="Specifications (Hindi)")
     order = models.IntegerField(default=0)
     
     class Meta:
@@ -134,7 +152,9 @@ class EquipmentImage(models.Model):
     equipment = models.ForeignKey(Equipment, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='equipment/images/')
     title = models.CharField(max_length=200, blank=True)
+    title_hi = models.CharField(max_length=200, blank=True, verbose_name="Title (Hindi)")
     description = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True, verbose_name="Description (Hindi)")
     order = models.IntegerField(default=0)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
@@ -154,6 +174,7 @@ class Staff(models.Model):
     
     name = models.CharField(max_length=200, blank=True)
     designation = models.CharField(max_length=200)
+    designation_hi = models.CharField(max_length=200, blank=True, verbose_name="Designation (Hindi)")
     staff_type = models.CharField(max_length=20, choices=STAFF_TYPES)
     team = models.CharField(max_length=50, blank=True)
     quantity = models.IntegerField(default=1)
@@ -177,9 +198,11 @@ class Document(models.Model):
     ]
     
     title = models.CharField(max_length=200)
+    title_hi = models.CharField(max_length=200, blank=True, verbose_name="Title (Hindi)")
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
     file = models.FileField(upload_to='documents/%Y/%m/')
     description = models.TextField(blank=True)
+    description_hi = models.TextField(blank=True, verbose_name="Description (Hindi)")
     uploaded_at = models.DateTimeField(auto_now_add=True)
     order = models.IntegerField(default=0)
     
@@ -233,14 +256,19 @@ class HomeBanner(models.Model):
     ]
 
     title = models.CharField(max_length=200)
+    title_hi = models.CharField(max_length=200, blank=True, verbose_name="Title (Hindi)")
     subtitle = models.CharField(max_length=300, blank=True)
+    subtitle_hi = models.CharField(max_length=300, blank=True, verbose_name="Subtitle (Hindi)")
     tagline = models.CharField(max_length=300, blank=True)
+    tagline_hi = models.CharField(max_length=300, blank=True, verbose_name="Tagline (Hindi)")
     media_type = models.CharField(max_length=10, choices=MEDIA_TYPES, default='video')
     image = models.ImageField(upload_to='banners/images/', blank=True, null=True)
     video = models.FileField(upload_to='banners/videos/', blank=True, null=True)
     button_text = models.CharField(max_length=80, blank=True, default='Learn More')
+    button_text_hi = models.CharField(max_length=80, blank=True, verbose_name="Button Text (Hindi)")
     button_url = models.CharField(max_length=300, blank=True, default='/projects/')
     secondary_button_text = models.CharField(max_length=80, blank=True, default='Contact Us')
+    secondary_button_text_hi = models.CharField(max_length=80, blank=True, verbose_name="Secondary Button (Hindi)")
     secondary_button_url = models.CharField(max_length=300, blank=True, default='/contact/')
     is_active = models.BooleanField(default=True)
     order = models.IntegerField(default=0)

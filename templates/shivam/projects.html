@@ -1,33 +1,30 @@
 {% extends 'shivam/base.html' %}
-{% load static %}
+{% load static shivam_tags %}
 
-{% block title %}Projects - Shivam Construction Company{% endblock %}
+{% block title %}{{ t.projects_title }}{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
 <section class="page-header">
     <div class="container">
-        <h1>Projects</h1>
-        <p class="subtitle">Our Experience and Track Record</p>
+        <h1>{{ t.projects_heading }}</h1>
+        <p class="subtitle">{{ t.projects_subtitle }}</p>
     </div>
 </section>
 
-<!-- Projects Section -->
 <section class="section projects-section page-background" {% if company.projects_bg %}style="background-image: url('{{ company.projects_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/projects-bg.jpg" %}');"{% endif %}>
     <div class="background-overlay"></div>
     <div class="container">
-        <!-- Project Filter Dropdown -->
         <div class="project-filters">
             <div class="filter-dropdown-wrapper">
                 <select id="projectFilter" class="project-filter-dropdown" onchange="filterProjects(this.value)">
-                    <option value="all" {% if current_filter == 'all' %}selected{% endif %}>ALL PROJECTS ({{ total_count }})</option>
-                    <option value="completed" {% if current_filter == 'completed' %}selected{% endif %}>PROJECT COMPLETED ({{ completed_count }})</option>
-                    <option value="on_hand" {% if current_filter == 'on_hand' %}selected{% endif %}>PROJECT ON HAND ({{ on_hand_count }})</option>
-                    <option value="ongoing" {% if current_filter == 'ongoing' %}selected{% endif %}>ONGOING PROJECTS ({{ ongoing_count }})</option>
+                    <option value="all" {% if current_filter == 'all' %}selected{% endif %}>{{ t.filter_all }} ({{ total_count }})</option>
+                    <option value="completed" {% if current_filter == 'completed' %}selected{% endif %}>{{ t.filter_completed }} ({{ completed_count }})</option>
+                    <option value="on_hand" {% if current_filter == 'on_hand' %}selected{% endif %}>{{ t.filter_on_hand }} ({{ on_hand_count }})</option>
+                    <option value="ongoing" {% if current_filter == 'ongoing' %}selected{% endif %}>{{ t.filter_ongoing }} ({{ ongoing_count }})</option>
                 </select>
             </div>
             <div class="filter-info">
-                <p>Showing: <strong id="showingCount">{{ projects.count }}</strong> project(s)</p>
+                <p>{{ t.showing }}: <strong id="showingCount">{{ projects.count }}</strong> {{ t.projects_count }}</p>
             </div>
         </div>
         
@@ -35,27 +32,27 @@
             <table class="projects-table">
                 <thead>
                     <tr>
-                        <th>S. No.</th>
-                        <th>Work Awarded By</th>
-                        <th>WO Reference</th>
-                        <th>Type of Works</th>
-                        <th>Status</th>
-                        <th>Date</th>
+                        <th>{{ t.col_sno }}</th>
+                        <th>{{ t.col_work_awarded }}</th>
+                        <th>{{ t.col_wo_ref }}</th>
+                        <th>{{ t.col_type }}</th>
+                        <th>{{ t.col_status }}</th>
+                        <th>{{ t.col_date }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for project in projects %}
                     <tr class="project-row" onclick="window.location.href='{% url 'project_detail' project.id %}'">
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ project.work_awarded_by }}</td>
-                        <td>{{ project.wo_reference }}</td>
-                        <td>{{ project.type_of_work }}</td>
-                        <td>
+                        <td data-label="{{ t.col_sno }}">{{ forloop.counter }}</td>
+                        <td data-label="{{ t.col_work_awarded }}">{% lfield project "work_awarded_by" %}</td>
+                        <td data-label="{{ t.col_wo_ref }}">{{ project.wo_reference }}</td>
+                        <td data-label="{{ t.col_type }}">{% lfield project "type_of_work" %}</td>
+                        <td data-label="{{ t.col_status }}">
                             <span class="status-badge status-{{ project.status }}">
-                                {{ project.get_status_display }}
+                                {% project_status_label project.status %}
                             </span>
                         </td>
-                        <td>{{ project.date|date:"d/m/Y" }}</td>
+                        <td data-label="{{ t.col_date }}">{{ project.date|date:"d/m/Y" }}</td>
                     </tr>
                     {% if project.image %}
                     <tr class="project-image-row">
@@ -68,13 +65,13 @@
                     <tr>
                         <td colspan="6" class="no-projects-cell">
                             {% if current_filter == 'on_hand' %}
-                                No "Project On Hand" records found. Please add on-hand projects from Admin.
+                                {{ t.no_projects_on_hand }}
                             {% elif current_filter == 'ongoing' %}
-                                No ongoing project records found. Please add ongoing projects from Admin.
+                                {{ t.no_projects_ongoing }}
                             {% elif current_filter == 'completed' %}
-                                No completed project records found yet.
+                                {{ t.no_projects_completed }}
                             {% else %}
-                                No project records found yet. Please add projects from Admin.
+                                {{ t.no_projects_all }}
                             {% endif %}
                         </td>
                     </tr>
@@ -84,6 +81,7 @@
         </div>
     </div>
 </section>
+{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -98,5 +96,3 @@ function filterProjects(status) {
 }
 </script>
 {% endblock %}
-{% endblock %}
-

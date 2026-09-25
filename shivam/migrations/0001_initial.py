@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('tagline', models.CharField(default='Civil Contractor & General Order Suppliers', max_length=300)),
                 ('phone', models.CharField(default='6350092193', max_length=20)),
                 ('email', models.EmailField(default='scccompany91@gmail.com', max_length=254)),
-                ('address', models.TextField(default='SHOP NO. 05, NEAR INDANE GAS OFFICE, BASANT VIHAR COLONY, SURATGARH, SRI GANGANAGAR, RAJASTHAN, 335804')),
+                ('address', models.TextField(default='BUILDING NO./FLAT NO.: MEEL COLONY KE SAMANE, ROAD/STREET: WARD NO. 03 NEW, CITY/TOWN/VILLAGE: SURATGARH, DISTRICT: SRI GANGANAGAR, STATE: RAJASTHAN, PIN CODE: 335804')),
                 ('vision', models.TextField(blank=True)),
                 ('quality_policy', models.TextField(blank=True)),
                 ('introduction', models.TextField(blank=True)),

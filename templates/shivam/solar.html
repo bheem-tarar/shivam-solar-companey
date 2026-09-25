@@ -1,0 +1,134 @@
+{% extends 'shivam/base.html' %}
+{% load static shivam_tags %}
+
+{% block title %}{{ t.solar_title }}{% endblock %}
+
+{% block content %}
+<section class="solar-hero">
+    <img src="{% static 'images/solar/solar-rooftop.png' %}" alt="{{ t.solar_brand }}" class="solar-hero-img">
+    <div class="solar-hero-overlay"></div>
+    <div class="container solar-hero-copy">
+        <p class="hero-brand">{{ t.solar_sister_label }}</p>
+        <h1>{{ t.solar_brand }}</h1>
+        <p class="solar-hero-tag">{{ t.solar_tagline }}</p>
+        <div class="hero-buttons">
+            <a href="#home-rooftop" class="btn btn-primary">{{ t.solar_home_cta }}</a>
+            <a href="#branches" class="btn btn-secondary">{{ t.solar_cta_branches }}</a>
+        </div>
+    </div>
+</section>
+
+<section class="section solar-home-feature" id="home-rooftop">
+    <div class="container">
+        <div class="solar-home-panel">
+            <div class="solar-home-copy">
+                <span class="sister-badge">{{ t.solar_home_badge }}</span>
+                <h2>{{ t.solar_home_heading }}</h2>
+                <p>{{ t.solar_home_p1 }}</p>
+                <p>{{ t.solar_home_p2 }}</p>
+                <ul class="solar-home-points">
+                    <li>{{ t.solar_home_point_1 }}</li>
+                    <li>{{ t.solar_home_point_2 }}</li>
+                    <li>{{ t.solar_home_point_3 }}</li>
+                </ul>
+                <a href="{% url 'contact' %}" class="btn btn-primary">{{ t.solar_home_cta }}</a>
+            </div>
+            <div class="solar-home-media">
+                <img src="{% static 'images/solar/solar-rooftop.png' %}" alt="{{ t.solar_home_heading }}">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section solar-about-section">
+    <div class="container">
+        <div class="solar-about-grid">
+            <div>
+                <p class="section-eyebrow">{{ t.solar_brand }}</p>
+                <h2 class="section-title section-title-left">{{ t.solar_about_heading }}</h2>
+                <p>{{ t.solar_about_p1 }}</p>
+                <p>{{ t.solar_about_p2 }}</p>
+                <a href="{% url 'services' %}" class="text-link">← {{ t.solar_back_services }}</a>
+            </div>
+            <div class="solar-about-media">
+                <img src="{% static 'images/solar/solar-rooftop.png' %}" alt="{{ t.solar_brand }}">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section solar-services-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">{{ t.solar_services_heading }}</h2>
+            <p class="section-note">{{ t.solar_services_note }}</p>
+        </div>
+        <div class="solar-services-grid">
+            {% for item in solar_services %}
+            <article class="solar-service-card {% if item.featured %}solar-service-featured{% endif %}">
+                <div class="solar-service-media">
+                    <img src="{% static item.image %}" alt="{{ item.title }}">
+                </div>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.text }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section solar-projects-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">{{ t.solar_projects_heading }}</h2>
+            <p class="section-note">{{ t.solar_projects_note }}</p>
+        </div>
+        <div class="solar-projects-grid">
+            {% for project in solar_projects %}
+            <article class="solar-project-card">
+                <span class="solar-status">{{ project.status }}</span>
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.place }}</p>
+            </article>
+            {% endfor %}
+        </div>
+        <div class="solar-gallery">
+            <img src="{% static 'images/solar/solar-ground.png' %}" alt="{{ t.solar_projects_heading }}">
+            <img src="{% static 'images/solar/solar-inverter.png' %}" alt="{{ t.solar_projects_heading }}">
+            <img src="{% static 'images/solar/solar-farm-rajasthan.png' %}" alt="{{ t.solar_projects_heading }}">
+        </div>
+    </div>
+</section>
+
+<section class="section solar-branches-section" id="branches">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">{{ t.solar_branches_heading }}</h2>
+            <p class="section-note">{{ t.solar_branches_note }}</p>
+        </div>
+        <div class="solar-branches-grid">
+            {% for branch in solar_branches %}
+            <div class="solar-branch-card">
+                <h3>{{ branch.city }}</h3>
+                <p>{{ branch.area }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section bid-cta-section">
+    <div class="container">
+        <div class="bid-cta-panel solar-cta-panel">
+            <div class="bid-cta-copy">
+                <h2>{{ t.solar_cta_title }}</h2>
+                <p>{{ t.solar_cta_text }}</p>
+            </div>
+            <div class="bid-cta-actions">
+                <a href="{% url 'contact' %}" class="btn btn-primary">{{ t.solar_cta_quote }}</a>
+                <a href="tel:{{ company.phone|default:'6350092193' }}" class="btn btn-secondary">{{ t.bid_btn_call }}</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

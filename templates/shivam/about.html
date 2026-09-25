@@ -1,37 +1,34 @@
 {% extends 'shivam/base.html' %}
-{% load static %}
+{% load static shivam_tags %}
 
-{% block title %}About Us - Shivam Construction Company{% endblock %}
+{% block title %}{{ t.about_title }}{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
 <section class="page-header">
     <div class="container">
-        <h1>About Us</h1>
+        <h1>{{ t.about_heading }}</h1>
     </div>
 </section>
 
-<!-- Introduction Section -->
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">INTRODUCTION</h2>
+            <h2 class="section-title">{{ t.introduction }}</h2>
         </div>
         <div class="content-box">
-            <p>Shivam Construction Company is engaged in large format earthworks, cross-country piping, irrigation works, industrial plant buildings, commercial and IT spaces, plant fabrication and erection (especially in power, petrochemical, and pharmaceutical areas).</p>
-            <p>We have expertise in Civil activities, including Construction of Industrial and Residential Buildings, heavy equipment foundations, and Cooling Towers.</p>
-            <p class="highlight-text"><strong>Our Motto:</strong> To exceed the customer expectations by understanding their needs and delivering them with specified quality, within the agreed time and thus becoming their trusted partners.</p>
-            <p>We believe the workplace is where one should unleash creative excellence, possible through "unbounded freedom bounded only by one's own conscience."</p>
+            <p>{% lfield company "introduction" fallback_key="intro_p1" %}</p>
+            <p>{{ t.intro_p2 }}</p>
+            <p class="highlight-text"><strong>{{ t.intro_motto }}</strong> {{ t.intro_motto_text }}</p>
+            <p>{{ t.intro_philosophy }}</p>
         </div>
     </div>
 </section>
 
-<!-- Vision Section -->
 <section class="section vision-section page-background" {% if company.vision_bg %}style="background-image: url('{{ company.vision_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/vision-bg.jpg" %}');"{% endif %}>
     <div class="background-overlay"></div>
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">OUR WIN - WIN VISION</h2>
+            <h2 class="section-title">{{ t.vision_title }}</h2>
         </div>
         <div class="vision-content">
             {% if vision_images %}
@@ -42,24 +39,26 @@
                 </div>
             {% endif %}
             <ul class="vision-list">
-                <li>To become a leading professional one solution engineering consultancy,</li>
-                <li>Construction organization and asset builder in large format earth works,</li>
-                <li>Industrial plant construction and commercial building construction with best national & international quality standards.</li>
+                {% if company.vision or company.vision_hi %}
+                <li>{% lfield company "vision" %}</li>
+                {% else %}
+                <li>{{ t.vision_1 }}</li>
+                <li>{{ t.vision_2 }}</li>
+                <li>{{ t.vision_3 }}</li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </section>
 
-<!-- Quality Policy Section -->
 <section class="section quality-section page-background" {% if company.quality_bg %}style="background-image: url('{{ company.quality_bg.url }}');"{% elif company.hero_image %}style="background-image: url('{{ company.hero_image.url }}');"{% else %}style="background-image: url('{% static "images/quality-bg.jpg" %}');"{% endif %}>
     <div class="background-overlay"></div>
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">QUALITY POLICY</h2>
+            <h2 class="section-title">{{ t.quality_title }}</h2>
         </div>
         <div class="content-box">
-            <p>Our policy at SCC is to exceed the customer expectations by understanding their needs and delivering them with specified quality, within agreed time by becoming their trusted partners through constant interaction and continuous improvement by enabling a positive and creative environment.</p>
-            
+            <p>{% lfield company "quality_policy" fallback_key="quality_text" %}</p>
             {% if quality_images %}
                 <div class="quality-images-wrapper">
                     {% for img in quality_images %}
@@ -68,73 +67,48 @@
                 </div>
             {% endif %}
             <div class="keywords-section">
-                <h3>Our Key Words:</h3>
+                <h3>{{ t.keywords_heading }}</h3>
                 <div class="keywords-grid">
-                    <div class="keyword-card">
-                        <span class="keyword-letter">Q</span>
-                        <span class="keyword-rest">UALITY</span>
-                    </div>
-                    <div class="keyword-card">
-                        <span class="keyword-letter">T</span>
-                        <span class="keyword-rest">IME</span>
-                    </div>
-                    <div class="keyword-card">
-                        <span class="keyword-letter">T</span>
-                        <span class="keyword-rest">RUST</span>
-                    </div>
+                    {% if is_hindi %}
+                    <div class="keyword-card">{{ t.kw_quality }}</div>
+                    <div class="keyword-card">{{ t.kw_time }}</div>
+                    <div class="keyword-card">{{ t.kw_trust }}</div>
+                    {% else %}
+                    <div class="keyword-card"><span class="keyword-letter">Q</span><span class="keyword-rest">UALITY</span></div>
+                    <div class="keyword-card"><span class="keyword-letter">T</span><span class="keyword-rest">IME</span></div>
+                    <div class="keyword-card"><span class="keyword-letter">T</span><span class="keyword-rest">RUST</span></div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Key Persons Section -->
 <section class="section team-section">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">KEY PERSONS</h2>
+            <h2 class="section-title">{{ t.key_persons }}</h2>
         </div>
         <div class="key-persons-grid">
             {% for person in key_persons %}
             <div class="person-card">
+                <div class="person-photo-wrap">
+                    {% if person.photo %}
+                        <img src="{{ person.photo.url }}" alt="{{ person.name }}" class="person-photo">
+                    {% else %}
+                        <div class="person-photo-fallback">{{ person.name|first }}</div>
+                    {% endif %}
+                </div>
                 <div class="person-info">
                     <h3>{{ person.name }}</h3>
-                    <p class="person-role">{{ person.role }}</p>
-                    <p class="person-description">{{ person.description }}</p>
+                    <p class="person-role">{% lfield person "role" %}</p>
+                    <p class="person-description">{% lfield person "description" %}</p>
                 </div>
             </div>
             {% empty %}
-            <div class="person-card">
-                <div class="person-info">
-                    <h3>Mr. V. K. Choudhary</h3>
-                    <p class="person-role">Managing Director</p>
-                    <p class="person-description">A natural entrepreneur with excellent experience in large format Earth works, Cross country Pipe lines, road works, etc. He hails from a business family with enormous experience in project implementation.</p>
-                </div>
-            </div>
-            <div class="person-card">
-                <div class="person-info">
-                    <h3>Mr. Praveen Acharya</h3>
-                    <p class="person-role">Director</p>
-                    <p class="person-description">A Post graduate in Arts. After acquiring working experience in reputed organizations, he has been inducted into the board of Directors and took over the responsibility for Finance and accounting.</p>
-                </div>
-            </div>
-            <div class="person-card">
-                <div class="person-info">
-                    <h3>Mr. Rakesh Kumar</h3>
-                    <p class="person-role">Director</p>
-                    <p class="person-description">A Post graduate in Arts. After acquiring working experience in reputed organizations, he has been inducted into the board of Directors and took over the responsibility of HR and Admn.</p>
-                </div>
-            </div>
-            <div class="person-card">
-                <div class="person-info">
-                    <h3>Mr. Chanderkant</h3>
-                    <p class="person-role">Technical Advisor</p>
-                    <p class="person-description">A highly knowledgeable and successful project professional who proved himself by independently executing large power plant projects. His background with KC Group, BHEL, is mentioned as taking the company to new heights.</p>
-                </div>
-            </div>
+            <p>{{ t.contact_subtitle }}</p>
             {% endfor %}
         </div>
     </div>
 </section>
 {% endblock %}
-
